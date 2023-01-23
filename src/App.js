@@ -1,49 +1,15 @@
 import React from 'react';
-
-const todoList = [
-  {
-    title: 'Water plants',
-    id: 0,
-    isComplete: false,
-  },
-  {
-    title: 'Buy milk',
-    id: 1,
-    isComplete: false,
-  },
-  {
-    title: 'Check calendar',
-    id: 2,
-    isComplete: false,
-  },
-  {
-    title: 'Finish homework++',
-    id: 3,
-    isComplete: false,
-  },
-  {
-    title: 'See friends',
-    id: 4,
-    isComplete: false,
-  },
-  {
-    title: 'Fix bike',
-    id: 5,
-    isComplete: false,
-  },
-
-
-];
+import TodoList from './TodoList'
+import AddTodoForm from './AddTodoForm'
 
 function App() {
+
   return (
     <div style={{ textAlign: 'center' }}>
-      <header>Todo List</header>
-      <ul>
-        {todoList.map((list) =>
-          <li key={list.id}> {list.title}</li>
-        )}
-      </ul>
+      <h1>Todo List</h1>
+      <AddTodoForm />
+      <TodoList />
+
     </div>
   );
 }
