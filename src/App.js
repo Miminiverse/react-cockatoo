@@ -6,14 +6,19 @@ import AddTodoForm from './AddTodoForm'
 
 function App() {
 
-  const [newTodo, setNewTodo] = useState("")
+
+  const [todoList, setTodoList] = useState([])
+  
+  function addTodo (newTodo) {
+    setTodoList([...todoList, newTodo])
+    console.log(todoList)
+  }
 
   return (
     <div style={{ textAlign: 'center' }}>
       <h1>Todo List</h1>
-      <AddTodoForm onAddTodo={setNewTodo} />
-      <p>{newTodo}</p>
-      <TodoList />
+      <AddTodoForm onAddTodo={addTodo} />
+      <TodoList todoList={todoList}/>
 
     </div>
   );
