@@ -9,6 +9,7 @@ export default function AddTodoForm({ onAddTodo }) {
     function handleTitleChange (e){
         const newTodoTitle = e.target.value;
         setTodoTitle(newTodoTitle)
+
     }
 
     function handleAddTodo(e) {
@@ -18,6 +19,7 @@ export default function AddTodoForm({ onAddTodo }) {
             id: Date.now()
         })
         setTodoTitle("")
+        console.log("todoTitleonSubmit", todoTitle)
     }
 
     return (
