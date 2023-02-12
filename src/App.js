@@ -15,7 +15,6 @@ function useSemiPersistentState () {
   return [todoList, setTodoList]
 }
 
-
 function App() {
   const [todoList, setTodoList] = useSemiPersistentState()
 

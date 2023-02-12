@@ -1,9 +1,9 @@
 import React from 'react';
 
-export default function TodoListItem({todo}) {
+export default function TodoListItem({id, todo}) {
     return (
         <>
-            <li> {todo.title}</li>
+            <li key={id}> {todo.title}</li>
         </>
 
     )
