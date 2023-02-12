@@ -7,8 +7,7 @@ export default function AddTodoForm({ onAddTodo }) {
     const [todoTitle, setTodoTitle] = useState('')
 
     function handleTitleChange (e){
-        const form = new FormData(document.getElementById("form"));
-        const newTodoTitle = form.get("title");
+        const newTodoTitle = e.target.value;
         setTodoTitle(newTodoTitle)
     }
 
