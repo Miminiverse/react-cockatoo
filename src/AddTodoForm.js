@@ -19,7 +19,6 @@ export default function AddTodoForm({ onAddTodo }) {
             id: Date.now()
         })
         setTodoTitle("")
-        console.log("todoTitleonSubmit", todoTitle)
     }
 
     return (
