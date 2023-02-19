@@ -12,9 +12,7 @@ export default function TodoListItem({todo, onRemoveTodo}) {
             }
                 >Remove</button>
             </li>
-
         </p>
         </>
-
     )
 }
