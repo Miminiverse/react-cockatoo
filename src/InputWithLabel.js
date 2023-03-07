@@ -1,8 +1,8 @@
 import React, {useRef, useEffect} from 'react';
 
-export default function InputWithLabel({onChange, todoTitle, label, children}) {
+export default function InputWithLabel({ id, children,  ...inputProps }) {
 
-    const inputRef = useRef()
+    const inputRef = useRef(null)
 
     useEffect (() => {
         inputRef.current.focus()
@@ -10,8 +10,8 @@ export default function InputWithLabel({onChange, todoTitle, label, children}) {
 
     return (
         <>
-        <label htmlFor='todoTitle'>{children}</label>
-        <input id="todoTitle" name="title" onChange={onChange} value={todoTitle} ref={inputRef} />
+        <label htmlFor={id}>{children}</label>
+        <input id={id} ref={inputRef}  {...inputProps}/>
         </>
     )
 }
