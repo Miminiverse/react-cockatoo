@@ -9,6 +9,7 @@ function App() {
 
   const [todoList, setTodoList] = useState ([])
   const [isLoading, setIsLoading] = useState (true)
+  const url = `https://api.airtable.com/v0/${process.env.REACT_APP_AIRTABLE_BASE_ID}/${process.env.REACT_APP_TABLE_NAME}`
 
   const fetchData = async () => {
     const options = {
@@ -17,7 +18,7 @@ function App() {
         Authorization: `Bearer ${process.env.REACT_APP_AIRTABLE_API_KEY}`,
       }
     }
-    const url = `https://api.airtable.com/v0/${process.env.REACT_APP_AIRTABLE_BASE_ID}/${process.env.REACT_APP_TABLE_NAME}`
+
     try {
       const response = await fetch (url, options)
       if (!response.ok) {
@@ -31,7 +32,6 @@ function App() {
         }
 
       })
-      console.log(todos)
       setTodoList(todos)
       setIsLoading(false)
 
@@ -41,16 +41,43 @@ function App() {
   }
 
   useEffect(() => {
+    console.log("render")
     fetchData()
   }, [])
 
   const addTodo = (newTodo) => {
-    setTodoList((prevList) => [...prevList, newTodo]);
-  };
+    console.log("add")
+    fetch (url, {
+      method: 'POST',
+      headers: {  
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${process.env.REACT_APP_AIRTABLE_API_KEY}`,
+    },
+      body: JSON.stringify({fields: newTodo})
+    }
+    )
+    .then (response => response.json())
+    .then (data => { 
+      const addTodo = 
+       {
+        title: data.fields.title,
+        id: data.id
+      }
+      setTodoList((prevList) => [...prevList, addTodo])
+    })
+    }
 
 
-  function removeTodo (todo) {
-    setTodoList((newArray) => newArray.filter((list) => todo.id !== list.id))
+  const removeTodo = async (todo) => {
+    console.log(todo)
+    const urlDel = `https://api.airtable.com/v0/${process.env.REACT_APP_AIRTABLE_BASE_ID}/${process.env.REACT_APP_TABLE_NAME}/` + todo.id
+    const options ={
+      method: 'DELETE',
+      headers: {
+        Authorization: `Bearer ${process.env.REACT_APP_AIRTABLE_API_KEY}`,
+    }
+  }  
+    const response = await fetch (urlDel, options)
   }
 
   return (

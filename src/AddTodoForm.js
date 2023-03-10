@@ -14,8 +14,7 @@ export default function AddTodoForm({ onAddTodo }) {
     function handleAddTodo(e) {
         e.preventDefault()
         onAddTodo({
-            title: todoTitle,
-            id: Date.now()
+            title: todoTitle
         })
         setTodoTitle("")
     }
