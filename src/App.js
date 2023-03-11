@@ -41,12 +41,10 @@ function App() {
   }
 
   useEffect(() => {
-    console.log("render")
     fetchData()
   }, [])
 
   const addTodo = (newTodo) => {
-    console.log("add")
     fetch (url, {
       method: 'POST',
       headers: {  
