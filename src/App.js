@@ -2,8 +2,10 @@
 import React, { useEffect, useState } from 'react';
 import TodoList from './TodoList'
 import AddTodoForm from './AddTodoForm'
-import TodoListItem from './TodoListItem';
 
+import {
+  BrowserRouter, Routes, Route
+} from "react-router-dom";
 
 function App() {
 
@@ -67,7 +69,7 @@ function App() {
 
 
   const removeTodo = async (todo) => {
-    console.log(todo)
+
     const urlDel = `https://api.airtable.com/v0/${process.env.REACT_APP_AIRTABLE_BASE_ID}/${process.env.REACT_APP_TABLE_NAME}/` + todo.id
     const options ={
       method: 'DELETE',
@@ -80,13 +82,25 @@ function App() {
   }
 
   return (
-    <div style={{ textAlign: 'center' }}>
-      <h1>Todo List</h1>
-      <AddTodoForm onAddTodo={addTodo} />
-      {isLoading ? <p> Loading ... </p> : 
-      <TodoList todoList={todoList} onRemoveTodo={removeTodo}/>
+    <BrowserRouter>
+    <Routes>
+      <Route exact path="/" 
+      element = {
+        <div style={{ textAlign: 'center' }}>
+        <h1>Todo List</h1>
+        <AddTodoForm onAddTodo={addTodo} />
+        {isLoading ? <p> Loading ... </p> : 
+        <TodoList todoList={todoList} onRemoveTodo={removeTodo}/>
+        }
+      </div>
       }
-    </div>
+      />
+      <Route path="/new" element={
+        <h1>New Todo List</h1>
+      }
+      />
+    </Routes>
+    </BrowserRouter>
   );
 }
 

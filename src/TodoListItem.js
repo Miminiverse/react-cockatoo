@@ -10,7 +10,8 @@ export default function TodoListItem({todo, onRemoveTodo}) {
             <button type="button" onClick={() => 
                 onRemoveTodo(todo)
             }
-                >Remove</button>
+                >Remove
+            </button>
             </li>
         </p>
         </>
