@@ -76,6 +76,7 @@ function App() {
     }
   }  
     const response = await fetch (urlDel, options)
+    setTodoList((prevList) => prevList.filter((item) => item.id !== todo.id))
   }
 
   return (
