@@ -11,7 +11,7 @@ function App() {
 
   const [todoList, setTodoList] = useState ([])
   const [isLoading, setIsLoading] = useState (true)
-  const url = `https://api.airtable.com/v0/${process.env.REACT_APP_AIRTABLE_BASE_ID}/${process.env.REACT_APP_TABLE_NAME}`
+  const url = `https://api.airtable.com/v0/${process.env.REACT_APP_AIRTABLE_BASE_ID}/${process.env.REACT_APP_TABLE_NAME}?sort%5B0%5D%5Bfield%5D=title&sort%5B0%5D%5Bdirection%5D=desc`
 
   const fetchData = async () => {
     const options = {
@@ -32,7 +32,6 @@ function App() {
           title: todo.fields.title,
           id: todo.id
         }
-
       })
       setTodoList(todos)
       setIsLoading(false)
@@ -70,15 +69,25 @@ function App() {
 
   const removeTodo = async (todo) => {
 
-    const urlDel = `https://api.airtable.com/v0/${process.env.REACT_APP_AIRTABLE_BASE_ID}/${process.env.REACT_APP_TABLE_NAME}/` + todo.id
+    const urlDel = `https://api.airtable.com/v0/${process.env.REACT_APP_AIRTABLE_BASE_ID}/${process.env.REACT_APP_TABLE_NAME}/${todo.id}`
     const options ={
       method: 'DELETE',
       headers: {
         Authorization: `Bearer ${process.env.REACT_APP_AIRTABLE_API_KEY}`,
     }
   }  
+  try {
+    
     const response = await fetch (urlDel, options)
+    if (!response.ok) {
+      throw new Error(`Error: ${response.status}`)
+    }
     setTodoList((prevList) => prevList.filter((item) => item.id !== todo.id))
+  }
+  catch (error) {
+    console.log(error)
+  }
+
   }
 
   return (
