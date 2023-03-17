@@ -1,5 +1,5 @@
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useReducer } from 'react';
 import TodoList from './TodoList'
 import AddTodoForm from './AddTodoForm'
 
@@ -9,9 +9,42 @@ import {
 
 function App() {
 
+  const stateManagementFunction = (previousState, action) => {
+    switch (action.type) {
+      case 'FINISH_LOADING_TITLES':
+        return {
+          ...previousState,
+          isLoading: false,
+          todoList: action.payload.todoList
+        }
+      case 'ERROR_LOADING_TITLES':
+        return {
+          ...previousState,
+          isLoading: false,
+          isError: true,
+        }
+      case 'ADD_TODO':
+        return {
+          ...previousState,
+          todoList: [...previousState.todoList, action.payload.todo]
+
+        }
+    }
+  }
+
+  const initialState = {
+    todoList: [],
+    isLoading: true,
+    isError: false
+  }
+
+  const [state, dispatchTitle] = useReducer(stateManagementFunction, initialState)
+
   const [todoList, setTodoList] = useState ([])
-  const [isLoading, setIsLoading] = useState (true)
+
   const url = `https://api.airtable.com/v0/${process.env.REACT_APP_AIRTABLE_BASE_ID}/${process.env.REACT_APP_TABLE_NAME}?sort%5B0%5D%5Bfield%5D=title&sort%5B0%5D%5Bdirection%5D=desc`
+
+
 
   const fetchData = async () => {
     const options = {
@@ -33,8 +66,12 @@ function App() {
           id: todo.id
         }
       })
-      setTodoList(todos)
-      setIsLoading(false)
+      dispatchTitle({
+        type: 'FINISH_LOADING_TITLES',
+        payload: {
+          todoList: todos,
+        }
+      })
 
     } catch (error) {
       console.log(error)
@@ -62,7 +99,11 @@ function App() {
         title: data.fields.title,
         id: data.id
       }
-      setTodoList((prevList) => [...prevList, addTodo])
+      dispatchTitle({
+        type: "ADD_TODO",
+        payload: {
+          todoList: 
+        }
     })
     }
 
@@ -87,8 +128,10 @@ function App() {
   catch (error) {
     console.log(error)
   }
+}
 
-  }
+
+  
 
   return (
     <BrowserRouter>
@@ -98,8 +141,8 @@ function App() {
         <div style={{ textAlign: 'center' }}>
         <h1>Todo List</h1>
         <AddTodoForm onAddTodo={addTodo} />
-        {isLoading ? <p> Loading ... </p> : 
-        <TodoList todoList={todoList} onRemoveTodo={removeTodo}/>
+        {state.isLoading ? <p> Loading ... </p> : 
+        <TodoList todoList={state.todoList} onRemoveTodo={removeTodo}/>
         }
       </div>
       }
