@@ -1,13 +1,17 @@
 
-import React, { useEffect, useState, useReducer } from 'react';
+import React, { useEffect, useReducer } from 'react';
 import TodoList from './TodoList'
 import AddTodoForm from './AddTodoForm'
-
 import {
   BrowserRouter, Routes, Route
 } from "react-router-dom";
 
 function App() {
+  const defaultHeaders = {
+    Authorization: `Bearer ${process.env.REACT_APP_AIRTABLE_API_KEY}`,
+  }
+
+
 
   const stateManagementFunction = (previousState, action) => {
     switch (action.type) {
@@ -26,31 +30,33 @@ function App() {
       case 'ADD_TODO':
         return {
           ...previousState,
-          todoList: [...previousState.todoList, action.payload.todo]
-
+          todoList: [...previousState.todoList, action.payload.newTodo]
         }
+      case 'REMOVE_TODO':
+        return {
+          ...previousState,
+          todoList: previousState.todoList.filter((todo) => todo.id !== action.payload.id)
+        }
+      default:
+        throw new Error();
     }
   }
 
   const initialState = {
     todoList: [],
     isLoading: true,
-    isError: false
+    isError: false,
   }
 
   const [state, dispatchTitle] = useReducer(stateManagementFunction, initialState)
 
-  const [todoList, setTodoList] = useState ([])
-
   const url = `https://api.airtable.com/v0/${process.env.REACT_APP_AIRTABLE_BASE_ID}/${process.env.REACT_APP_TABLE_NAME}?sort%5B0%5D%5Bfield%5D=title&sort%5B0%5D%5Bdirection%5D=desc`
-
-
 
   const fetchData = async () => {
     const options = {
       method: 'GET',
       headers: {
-        Authorization: `Bearer ${process.env.REACT_APP_AIRTABLE_API_KEY}`,
+        ...defaultHeaders,
       }
     }
 
@@ -74,20 +80,23 @@ function App() {
       })
 
     } catch (error) {
-      console.log(error)
-    }
+      dispatchTitle({
+        type: 'ERROR_LOADING_TITLES'
+    })
   }
+}
 
   useEffect(() => {
     fetchData()
-  }, [])
+  }, [state.searchText])
 
   const addTodo = (newTodo) => {
     fetch (url, {
       method: 'POST',
       headers: {  
+        ...defaultHeaders,
         'Content-Type': 'application/json',
-        Authorization: `Bearer ${process.env.REACT_APP_AIRTABLE_API_KEY}`,
+        
     },
       body: JSON.stringify({fields: newTodo})
     }
@@ -102,10 +111,11 @@ function App() {
       dispatchTitle({
         type: "ADD_TODO",
         payload: {
-          todoList: 
+          newTodo: addTodo 
         }
     })
-    }
+    })
+  }
 
 
   const removeTodo = async (todo) => {
@@ -114,7 +124,7 @@ function App() {
     const options ={
       method: 'DELETE',
       headers: {
-        Authorization: `Bearer ${process.env.REACT_APP_AIRTABLE_API_KEY}`,
+        ...defaultHeaders,
     }
   }  
   try {
@@ -123,15 +133,19 @@ function App() {
     if (!response.ok) {
       throw new Error(`Error: ${response.status}`)
     }
-    setTodoList((prevList) => prevList.filter((item) => item.id !== todo.id))
-  }
+    dispatchTitle({
+      type: "REMOVE_TODO",
+      payload: {
+        id: todo.id
+      }
+  })}
   catch (error) {
-    console.log(error)
+    dispatchTitle({
+      type: 'ERROR_LOADING_TITLES'
+  })
   }
 }
 
-
-  
 
   return (
     <BrowserRouter>
