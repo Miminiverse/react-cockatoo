@@ -6,13 +6,12 @@ import {
   BrowserRouter, Routes, Route
 } from "react-router-dom";
 
+import paths from './paths'
+
 function App() {
   const defaultHeaders = {
     Authorization: `Bearer ${process.env.REACT_APP_AIRTABLE_API_KEY}`,
   }
-
-
-
   const stateManagementFunction = (previousState, action) => {
     switch (action.type) {
       case 'FINISH_LOADING_TITLES':
@@ -20,6 +19,11 @@ function App() {
           ...previousState,
           isLoading: false,
           todoList: action.payload.todoList
+        }
+      case 'SET_SEARCH_TEXT':
+        return {
+          ...previousState,
+          searchText: action.payload.searchText
         }
       case 'ERROR_LOADING_TITLES':
         return {
@@ -46,22 +50,26 @@ function App() {
     todoList: [],
     isLoading: true,
     isError: false,
+    searchText: ""
   }
 
   const [state, dispatchTitle] = useReducer(stateManagementFunction, initialState)
 
-  const url = `https://api.airtable.com/v0/${process.env.REACT_APP_AIRTABLE_BASE_ID}/${process.env.REACT_APP_TABLE_NAME}?sort%5B0%5D%5Bfield%5D=title&sort%5B0%5D%5Bdirection%5D=desc`
+  const url = `https://api.airtable.com/v0/${process.env.REACT_APP_AIRTABLE_BASE_ID}/${process.env.REACT_APP_TABLE_NAME}`
 
-  const fetchData = async () => {
-    const options = {
-      method: 'GET',
-      headers: {
-        ...defaultHeaders,
-      }
-    }
+  const fetchData = async options => {
 
     try {
-      const response = await fetch (url, options)
+    //   let params = {}
+
+    //   if 
+
+      const response = await fetch (url + '?' + newURLSearchParams(params), 
+      {
+        headers: { ...defaultHeaders },
+        method: "GET",
+      }
+      )
       if (!response.ok) {
         throw new Error(`Error: ${response.status}`)
       }
@@ -150,7 +158,7 @@ function App() {
   return (
     <BrowserRouter>
     <Routes>
-      <Route exact path="/" 
+      <Route exact path={paths.HOME} 
       element = {
         <div style={{ textAlign: 'center' }}>
         <h1>Todo List</h1>
@@ -161,7 +169,8 @@ function App() {
       </div>
       }
       />
-      <Route path="/new" element={
+      <Route path={paths.NEW_TODO} 
+      element={
         <h1>New Todo List</h1>
       }
       />

@@ -1,10 +1,14 @@
 
 import React, {useState} from 'react';
 import InputWithLabel from './InputWithLabel'
+import { useNavigate } from 'react-router-dom'
+import paths from './paths'
+
 
 export default function AddTodoForm({ onAddTodo }) {
 
     const [todoTitle, setTodoTitle] = useState('')
+    const navigate = useNavigate()
 
     function handleTitleChange (e){
         const newTodoTitle = e.target.value;
@@ -21,6 +25,7 @@ export default function AddTodoForm({ onAddTodo }) {
             })
         }
         setTodoTitle("")
+        navigate(paths.HOME)
     }
 
     return (
