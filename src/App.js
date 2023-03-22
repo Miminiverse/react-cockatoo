@@ -1,21 +1,62 @@
 
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useReducer } from 'react';
 import TodoList from './TodoList'
 import AddTodoForm from './AddTodoForm'
-import TodoListItem from './TodoListItem';
-
+import {
+  BrowserRouter, Routes, Route
+} from "react-router-dom";
 
 function App() {
+  const defaultHeaders = {
+    Authorization: `Bearer ${process.env.REACT_APP_AIRTABLE_API_KEY}`,
+  }
 
-  const [todoList, setTodoList] = useState ([])
-  const [isLoading, setIsLoading] = useState (true)
-  const url = `https://api.airtable.com/v0/${process.env.REACT_APP_AIRTABLE_BASE_ID}/${process.env.REACT_APP_TABLE_NAME}`
+
+
+  const stateManagementFunction = (previousState, action) => {
+    switch (action.type) {
+      case 'FINISH_LOADING_TITLES':
+        return {
+          ...previousState,
+          isLoading: false,
+          todoList: action.payload.todoList
+        }
+      case 'ERROR_LOADING_TITLES':
+        return {
+          ...previousState,
+          isLoading: false,
+          isError: true,
+        }
+      case 'ADD_TODO':
+        return {
+          ...previousState,
+          todoList: [...previousState.todoList, action.payload.newTodo]
+        }
+      case 'REMOVE_TODO':
+        return {
+          ...previousState,
+          todoList: previousState.todoList.filter((todo) => todo.id !== action.payload.id)
+        }
+      default:
+        throw new Error();
+    }
+  }
+
+  const initialState = {
+    todoList: [],
+    isLoading: true,
+    isError: false,
+  }
+
+  const [state, dispatchTitle] = useReducer(stateManagementFunction, initialState)
+
+  const url = `https://api.airtable.com/v0/${process.env.REACT_APP_AIRTABLE_BASE_ID}/${process.env.REACT_APP_TABLE_NAME}?sort%5B0%5D%5Bfield%5D=title&sort%5B0%5D%5Bdirection%5D=desc`
 
   const fetchData = async () => {
     const options = {
       method: 'GET',
       headers: {
-        Authorization: `Bearer ${process.env.REACT_APP_AIRTABLE_API_KEY}`,
+        ...defaultHeaders,
       }
     }
 
@@ -30,26 +71,32 @@ function App() {
           title: todo.fields.title,
           id: todo.id
         }
-
       })
-      setTodoList(todos)
-      setIsLoading(false)
+      dispatchTitle({
+        type: 'FINISH_LOADING_TITLES',
+        payload: {
+          todoList: todos,
+        }
+      })
 
     } catch (error) {
-      console.log(error)
-    }
+      dispatchTitle({
+        type: 'ERROR_LOADING_TITLES'
+    })
   }
+}
 
   useEffect(() => {
     fetchData()
-  }, [])
+  }, [state.searchText])
 
   const addTodo = (newTodo) => {
     fetch (url, {
       method: 'POST',
       headers: {  
+        ...defaultHeaders,
         'Content-Type': 'application/json',
-        Authorization: `Bearer ${process.env.REACT_APP_AIRTABLE_API_KEY}`,
+        
     },
       body: JSON.stringify({fields: newTodo})
     }
@@ -61,32 +108,65 @@ function App() {
         title: data.fields.title,
         id: data.id
       }
-      setTodoList((prevList) => [...prevList, addTodo])
+      dispatchTitle({
+        type: "ADD_TODO",
+        payload: {
+          newTodo: addTodo 
+        }
     })
-    }
+    })
+  }
 
 
   const removeTodo = async (todo) => {
-    console.log(todo)
-    const urlDel = `https://api.airtable.com/v0/${process.env.REACT_APP_AIRTABLE_BASE_ID}/${process.env.REACT_APP_TABLE_NAME}/` + todo.id
+
+    const urlDel = `https://api.airtable.com/v0/${process.env.REACT_APP_AIRTABLE_BASE_ID}/${process.env.REACT_APP_TABLE_NAME}/${todo.id}`
     const options ={
       method: 'DELETE',
       headers: {
-        Authorization: `Bearer ${process.env.REACT_APP_AIRTABLE_API_KEY}`,
+        ...defaultHeaders,
     }
   }  
+  try {
+    
     const response = await fetch (urlDel, options)
-    setTodoList((prevList) => prevList.filter((item) => item.id !== todo.id))
+    if (!response.ok) {
+      throw new Error(`Error: ${response.status}`)
+    }
+    dispatchTitle({
+      type: "REMOVE_TODO",
+      payload: {
+        id: todo.id
+      }
+  })}
+  catch (error) {
+    dispatchTitle({
+      type: 'ERROR_LOADING_TITLES'
+  })
   }
+}
+
 
   return (
-    <div style={{ textAlign: 'center' }}>
-      <h1>Todo List</h1>
-      <AddTodoForm onAddTodo={addTodo} />
-      {isLoading ? <p> Loading ... </p> : 
-      <TodoList todoList={todoList} onRemoveTodo={removeTodo}/>
+    <BrowserRouter>
+    <Routes>
+      <Route exact path="/" 
+      element = {
+        <div style={{ textAlign: 'center' }}>
+        <h1>Todo List</h1>
+        <AddTodoForm onAddTodo={addTodo} />
+        {state.isLoading ? <p> Loading ... </p> : 
+        <TodoList todoList={state.todoList} onRemoveTodo={removeTodo}/>
+        }
+      </div>
       }
-    </div>
+      />
+      <Route path="/new" element={
+        <h1>New Todo List</h1>
+      }
+      />
+    </Routes>
+    </BrowserRouter>
   );
 }
 

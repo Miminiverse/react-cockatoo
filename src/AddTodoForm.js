@@ -13,9 +13,13 @@ export default function AddTodoForm({ onAddTodo }) {
 
     function handleAddTodo(e) {
         e.preventDefault()
-        onAddTodo({
-            title: todoTitle
-        })
+        if (!todoTitle) {
+            alert("Please enter a title")
+        } else {
+            onAddTodo({
+                title: todoTitle
+            })
+        }
         setTodoTitle("")
     }
 
