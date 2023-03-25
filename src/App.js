@@ -2,6 +2,7 @@
 import React, { useEffect, useReducer } from 'react';
 import TodoList from './TodoList'
 import AddTodoForm from './AddTodoForm'
+import Search from './Search'
 import {
   BrowserRouter, Routes, Route
 } from "react-router-dom";
@@ -14,6 +15,11 @@ function App() {
   }
   const stateManagementFunction = (previousState, action) => {
     switch (action.type) {
+      case 'START_LOADING_TITLES':
+        return {
+          ...previousState,
+          isLoading: true,
+        }
       case 'FINISH_LOADING_TITLES':
         return {
           ...previousState,
@@ -57,35 +63,57 @@ function App() {
 
   const url = `https://api.airtable.com/v0/${process.env.REACT_APP_AIRTABLE_BASE_ID}/${process.env.REACT_APP_TABLE_NAME}`
 
+  const refreshRecords = () => {
+    dispatchTitle({
+      type: 'START_LOADING_TITLES'
+    })
+    fetchData({searchText : state.searchText}).then(loadedTodos => {
+      console.log(loadedTodos)
+      dispatchTitle({
+        type: 'FINISH_LOADING_TITLES',
+        payload: {
+          todoList: loadedTodos
+        }
+      })
+    })
+  }
+
+  const handleResponse = async (response) => {
+    if (!response.ok) {
+      throw new Error(`Error: ${response.status}`)
+    }
+    const data = await response.json()
+    const todos = data.records.map((todo) => {
+      return {
+        title: todo.fields.title,
+        id: todo.id
+      }
+    })
+    return todos
+  }
+
+  
   const fetchData = async options => {
 
     try {
-    //   let params = {}
+      let params = {}
+      if (options?.searchText) {
+        params = {
+          ...params, 
+          filterByFormula: `SEARCH('${options.searchText.toLowerCase()}', {title})`,
+          'sort[0][field]': 'title',
+          'sort[0][direction]': 'desc',
+        };
+      }
 
-    //   if 
-
-      const response = await fetch (url + '?' + newURLSearchParams(params), 
+      
+      const response = await fetch (url + "?" + new URLSearchParams(params), 
       {
         headers: { ...defaultHeaders },
         method: "GET",
       }
       )
-      if (!response.ok) {
-        throw new Error(`Error: ${response.status}`)
-      }
-      const data = await response.json()
-      const todos = data.records.map((todo) => {
-        return {
-          title: todo.fields.title,
-          id: todo.id
-        }
-      })
-      dispatchTitle({
-        type: 'FINISH_LOADING_TITLES',
-        payload: {
-          todoList: todos,
-        }
-      })
+      return handleResponse(response)
 
     } catch (error) {
       dispatchTitle({
@@ -95,7 +123,7 @@ function App() {
 }
 
   useEffect(() => {
-    fetchData()
+    refreshRecords()
   }, [state.searchText])
 
   const addTodo = (newTodo) => {
@@ -154,6 +182,12 @@ function App() {
   }
 }
 
+  const onSearch = searchText => {
+    dispatchTitle ({
+      type: 'SET_SEARCH_TEXT',
+      payload: {searchText},
+    })
+  }
 
   return (
     <BrowserRouter>
@@ -163,6 +197,7 @@ function App() {
         <div style={{ textAlign: 'center' }}>
         <h1>Todo List</h1>
         <AddTodoForm onAddTodo={addTodo} />
+        <Search onSearch={onSearch}/>
         {state.isLoading ? <p> Loading ... </p> : 
         <TodoList todoList={state.todoList} onRemoveTodo={removeTodo}/>
         }
