@@ -3,7 +3,7 @@ import React, {useState} from 'react';
 import InputWithLabel from './InputWithLabel'
 import { useNavigate } from 'react-router-dom'
 import paths from './paths'
-
+import styles from './static/App.module.css'
 
 export default function AddTodoForm({ onAddTodo }) {
 
@@ -29,11 +29,18 @@ export default function AddTodoForm({ onAddTodo }) {
     }
 
     return (
-        <form id="form" onSubmit={handleAddTodo}>
-           <InputWithLabel onChange={handleTitleChange} value={todoTitle} id="title" name="title" title="title" >
-                Title: 
+        <form 
+        className={styles.form}
+        id="form" 
+        onSubmit={handleAddTodo}>
+           <InputWithLabel 
+           placeholder="Add todo"
+           onChange={handleTitleChange} value={todoTitle} id="title" name="title" title="title" >
             </InputWithLabel>
-            <button type="submit">Add</button>
+             <button 
+             className={styles.buttonAdd}
+             type="submit">Add</button> 
+
         </form>
     )
 }

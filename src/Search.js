@@ -1,6 +1,8 @@
 
 import React, {useState} from 'react';
 import InputWithLabel from './InputWithLabel'
+import styles from './static/App.module.css'
+import { ReactComponent as SearchLogo } from './static/search.svg';
 
 export default function Search({onSearch }) {
 
@@ -20,10 +22,19 @@ export default function Search({onSearch }) {
     }
 
     return (
-        <form>
-           <InputWithLabel onChange={onChange}  id="search" name="search" title="search" >
-                Search: 
+        <>
+        <form className={styles.form}>
+           <InputWithLabel 
+           onChange={onChange}  
+           id="search" 
+           name="search" 
+           title="search"
+           placeholder="Search"
+            >
             </InputWithLabel>
+
         </form>
+
+        </>
     )
 }

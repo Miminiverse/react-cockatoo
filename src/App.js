@@ -6,7 +6,7 @@ import Search from './Search'
 import {
   BrowserRouter, Routes, Route
 } from "react-router-dom";
-
+import styles from './static/App.module.css'
 import paths from './paths'
 
 function App() {
@@ -194,14 +194,22 @@ function App() {
     <Routes>
       <Route exact path={paths.HOME} 
       element = {
-        <div style={{ textAlign: 'center' }}>
+        <div className={styles.body} >
+        <header>
         <h1>Todo List</h1>
+        <div className={styles.wrap}>
         <AddTodoForm onAddTodo={addTodo} />
         <Search onSearch={onSearch}/>
+        </div>
+        </header>
+        <main>
         {state.isLoading ? <p> Loading ... </p> : 
         <TodoList todoList={state.todoList} onRemoveTodo={removeTodo}/>
         }
+        </main>
+
       </div>
+
       }
       />
       <Route path={paths.NEW_TODO} 

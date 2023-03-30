@@ -1,0 +1,175 @@
+:root {
+    --dark: #374151;
+    --darker: #1F2937;
+    --darkest: #111827;
+    --gray: #6B7280;
+    --light: #EEE;
+    --pink: #EC4899;
+    --purple: #8B5CF6;
+
+}
+
+* {
+    box-sizing: border-box;
+    margin: 0;
+}
+
+.body {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    background-color: var(--dark);
+    color: #FFF;
+    font-family: "Fira sans", sans-serif;
+}
+
+header {
+    padding: 2rem 1rem;
+    max-width: 800px;
+    width: 100%;
+    margin: 0 auto;
+}
+
+h1 {
+    font-size: 2.5rem;
+    font-weight: 300;
+    margin-bottom: 1rem;
+    color: var(--gray);
+    align-items: center;
+    text-align: center;
+
+}
+
+.form {
+    display: flex;
+}
+
+.wrap {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    align-items: right;
+}
+
+/* .wrapper {
+    flex: 1 1 0%;
+    align-items: right;
+} */
+
+input, button {
+    appearance: none;
+    border: none;
+    outline: none;
+    background: none;
+}
+
+.input {
+    flex: 1 1 0%;
+    background-color: var(--darker);
+    padding: 1rem;
+    border-radius: 1rem;
+    margin-right: 1rem;
+    margin-bottom: 1rem;
+    margin-left: 1rem;
+    color: var(--light);
+    font-size: 1.25rem;
+    align-items: right;
+}
+
+.input::placeholder {
+    color: var(--gray);
+}
+
+.buttonAdd {
+    color: var(--pink);
+    font-size: 1.25rem;
+    font-weight: 700;
+    background-image: linear-gradient(to right, var(--pink), var(--purple));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    cursor: pointer;
+    transition: 0.4s;
+    align-items: center;
+    text-align: center;
+    margin-bottom: 0.5rem;
+
+}
+
+.buttonAdd:hover {
+    opacity: 0.8;
+}
+
+.button:active {
+    opacity: 0.6;
+}
+
+main {
+    flex: 1 1 0%;
+    max-width: 800px;
+    width: 100%;
+    margin: 0 auto;
+    padding: 2rem 1rem;
+}
+
+.todoList {
+    padding: 1rem;
+}
+
+h2 {
+    font-size: 1.5rem;
+    font-weight: 300;
+    margin-bottom: 1rem;
+    color: var(--gray);
+}
+
+.lists {
+    display: flex;
+    justify-content: space-between;
+}
+
+.list {
+    display: flex;
+    justify-content: space-between;
+    background-color: var(--darkest);
+    padding: 1rem;
+    border-radius: 1rem;
+    margin-bottom: 1rem;
+    font-size: 1.125rem;
+    color: var(--light);
+    width: 100%;
+    transition: 0.4s;
+}
+
+.searchButton {
+    align-items: center;
+    text-align: center;
+    cursor: pointer;
+    height: 30px;
+    width: 30px;
+    margin: 0.5rem 0.3rem;
+}
+
+.buttonRemove {
+    cursor: pointer;
+    margin: 0 0.5rem;
+    font-size: 1.125rem;
+    font-weight: 700;
+    transition: 0.4s;
+    background-image: linear-gradient(to right, var(--pink), var(--purple));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.buttonAdd:hover {
+    opacity: 0.8;
+}
+
+.button:active {
+    opacity: 0.6;
+}
+
+@media (30em <= width <= 50em) {
+    .body {
+        background-color: black;
+      }
+}
