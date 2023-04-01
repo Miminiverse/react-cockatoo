@@ -81,7 +81,6 @@ function App() {
       type: 'START_LOADING_TITLES'
     })
     fetchData({searchText : state.searchText}).then(loadedTodos => {
-      console.log(loadedTodos)
       dispatchTitle({
         type: 'FINISH_LOADING_TITLES',
         payload: {
