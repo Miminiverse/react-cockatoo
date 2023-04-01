@@ -1,15 +1,28 @@
 
-import React, { useEffect, useReducer } from 'react';
+import React, { useContext, useEffect, useReducer, createContext, useState } from 'react';
 import TodoList from './TodoList'
 import AddTodoForm from './AddTodoForm'
+import SpeechText from './SpeechText'
 import Search from './Search'
 import {
   BrowserRouter, Routes, Route
 } from "react-router-dom";
 import styles from './static/App.module.css'
 import paths from './paths'
+import ThemeToggle from './ThemeToggle'
+import {ThemeContext}  from './ThemeContext'
+import "./index.css";
+
 
 function App() {
+  const [isDarkMode, setIsDarkMode] = useState(false)
+
+  function toggleTheme () {
+    console.log("toggleTheme")
+    setIsDarkMode((prevIsDarkMode) => !prevIsDarkMode)
+  }
+
+
   const defaultHeaders = {
     Authorization: `Bearer ${process.env.REACT_APP_AIRTABLE_API_KEY}`,
   }
@@ -189,27 +202,65 @@ function App() {
     })
   }
 
+
+  const addSpeechTodo = (newSpeechNote) => {
+    console.log(newSpeechNote)
+    fetch (url, {
+      method: 'POST',
+      headers: {  
+        'Content-Type': 'application/json',
+        Authorization: `Bearer ${process.env.REACT_APP_AIRTABLE_API_KEY}`,
+    },
+      body: JSON.stringify({fields: newSpeechNote})
+    }
+    )
+    .then (response => response.json())
+    .then(data => {
+      console.log(data)
+      const addSpeechNote = 
+      {
+       title: data.fields.title,
+       id: data.id
+     }
+      dispatchTitle({
+        type: "ADD_TODO",
+        payload: {
+          newTodo: addSpeechNote 
+        }
+    })
+    })
+  }
+  
+
   return (
+    <ThemeContext.Provider value={{isDarkMode, toggleTheme}} >
+      <div className={`App ${isDarkMode ? 'dark' : 'light'}`}>
     <BrowserRouter>
     <Routes>
+
       <Route exact path={paths.HOME} 
       element = {
         <div className={styles.body} >
+        <ThemeToggle />
         <header>
         <h1>Todo List</h1>
         <div className={styles.wrap}>
+
         <AddTodoForm onAddTodo={addTodo} />
         <Search onSearch={onSearch}/>
         </div>
+        <div className={styles.wrapSpeech}>
+        <h2>Bored of writing 😶‍🌫️ Speak to me 🤗</h2>
+        <SpeechText onAddSpeechTodo={addSpeechTodo}/>
+        </div>
         </header>
+
         <main>
         {state.isLoading ? <p> Loading ... </p> : 
         <TodoList todoList={state.todoList} onRemoveTodo={removeTodo}/>
         }
         </main>
-
       </div>
-
       }
       />
       <Route path={paths.NEW_TODO} 
@@ -217,8 +268,11 @@ function App() {
         <h1>New Todo List</h1>
       }
       />
+
     </Routes>
     </BrowserRouter>
+    </div>
+    </ThemeContext.Provider>
   );
 }
 
