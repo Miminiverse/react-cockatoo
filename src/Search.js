@@ -2,7 +2,7 @@
 import React, {useState} from 'react';
 import InputWithLabel from './InputWithLabel'
 import styles from './static/App.module.css'
-import { ReactComponent as SearchLogo } from './static/search.svg';
+
 
 export default function Search({onSearch }) {
 
