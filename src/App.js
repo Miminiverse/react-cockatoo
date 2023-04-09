@@ -1,27 +1,23 @@
 
 import React, { useEffect, useReducer, useState } from 'react';
-import TodoList from './TodoList'
-import AddTodoForm from './AddTodoForm'
-import SpeechText from './SpeechText'
-import Search from './Search'
-import {
-  BrowserRouter, Routes, Route
-} from "react-router-dom";
+import TodoList from './components/TodoList'
+import AddTodoForm from './components/AddTodoForm'
+import SpeechText from './components/SpeechText'
+import Search from './components/Search'
+import {BrowserRouter, Routes, Route} from "react-router-dom";
 import styles from './static/App.module.css'
-import paths from './paths'
-import ThemeToggle from './ThemeToggle'
-import {ThemeContext}  from './ThemeContext'
 import "./index.css";
+import paths from './paths'
+import ThemeToggle   from './ThemeToggle'
+import {ThemeContext}  from './ThemeContext'
 
 
 function App() {
   const [isDarkMode, setIsDarkMode] = useState(false)
 
   function toggleTheme () {
-    console.log("toggleTheme")
     setIsDarkMode((prevIsDarkMode) => !prevIsDarkMode)
   }
-
 
   const defaultHeaders = {
     Authorization: `Bearer ${process.env.REACT_APP_AIRTABLE_API_KEY}`,
@@ -201,7 +197,6 @@ function App() {
     })
   }
 
-
   const addSpeechTodo = (newSpeechNote) => {
     console.log(newSpeechNote)
     fetch (url, {
@@ -215,7 +210,6 @@ function App() {
     )
     .then (response => response.json())
     .then(data => {
-      console.log(data)
       const addSpeechNote = 
       {
        title: data.fields.title,

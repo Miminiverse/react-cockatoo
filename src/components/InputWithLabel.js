@@ -1,5 +1,5 @@
 import React, {useRef, useEffect} from 'react';
-import styles from './static/App.module.css'
+import styles from '../static/App.module.css'
 export default function InputWithLabel({ id, children,  ...inputProps }) {
 
     const inputRef = useRef(null)

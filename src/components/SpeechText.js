@@ -1,6 +1,6 @@
 
 import React, { useEffect, useState } from 'react';
-import styles from './static/App.module.css'
+import styles from '../static/App.module.css'
 
 
 const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition
@@ -13,7 +13,6 @@ mic.lang = 'en-US'
 function SpeechText({onAddSpeechTodo}) {
 const [isListening, setIsListening] = useState(false)
 const [note, setNote] = useState(null)
-
 
 
 useEffect(() => {
@@ -42,8 +41,6 @@ const handleListen = () => {
       .map(result => result[0])
       .map(result => result.transcript)
       .join('')
-    // console.log(transcript)
-
     setNote(transcript)
     mic.onerror = event => {
       console.log(event.error)

@@ -2,8 +2,8 @@
 import React, {useState} from 'react';
 import InputWithLabel from './InputWithLabel'
 import { useNavigate } from 'react-router-dom'
-import paths from './paths'
-import styles from './static/App.module.css'
+import paths from '../paths'
+import styles from '../static/App.module.css'
 
 export default function AddTodoForm({ onAddTodo }) {
 

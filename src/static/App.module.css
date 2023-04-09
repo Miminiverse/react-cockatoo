@@ -96,6 +96,8 @@ input, button {
     color: var(--gray);
 }
 
+
+
 .buttonAdd {
     color: var(--pink);
     font-size: 1.25rem;
@@ -108,7 +110,6 @@ input, button {
     align-items: center;
     text-align: center;
     margin-bottom: 0.5rem;
-
 }
 
 .buttonAdd:hover {
@@ -269,4 +270,15 @@ h2 {
   
   .fa-sun {
     color: yellow;
+  }
+
+
+  .light {
+    background-color: #ffffff;
+    color: #000000;
+  }
+  
+  .dark {
+    background-color: #000000;
+    color: #ffffff;
   }

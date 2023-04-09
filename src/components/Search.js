@@ -1,10 +1,10 @@
 
 import React, {useState} from 'react';
 import InputWithLabel from './InputWithLabel'
-import styles from './static/App.module.css'
+import styles from '../static/App.module.css'
 
 
-export default function Search({onSearch }) {
+export default function Search({onSearch}) {
 
     const [timer, setTimer] = useState(null)
 
