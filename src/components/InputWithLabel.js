@@ -19,7 +19,8 @@ export default function InputWithLabel({ id, children,  ...inputProps }) {
         <input
         className={styles.input} 
         id={id} 
-        ref={inputRef}  {...inputProps}/>
+        ref={inputRef}  {...inputProps}
+        />
         </div>
         </>
     )

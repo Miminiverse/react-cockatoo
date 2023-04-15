@@ -5,6 +5,7 @@ import TodoList from './components/TodoList'
 import AddTodoForm from './components/AddTodoForm'
 import SpeechText from './components/SpeechText'
 import Search from './components/Search'
+import Pagination from './components/Pagination'
 import ThemeToggle   from './ThemeToggle'
 import ThemeContext from './ThemeContext'
 import styles from './static/App.module.css'
@@ -14,18 +15,15 @@ import paths from './paths'
 
 function App() {
   const [isDarkMode, setIsDarkMode] = useState(true)
-  const [sortTitle, setSortTitle] = useState(false)
+  const [sortTitle, setSortTitle] = useState(true)
+  const [currentPage, setCurrentPage] = useState(1)
+  const [todoPerPage] = useState(10)
 
   function toggleTheme () {
     setIsDarkMode((prevIsDarkMode) => !prevIsDarkMode)
   }
   
-  function toggleSortTitle () {
-    setSortTitle((prevSortTitle) => !prevSortTitle)
 
-  }
-
-  console.log(sortTitle);
 
   const defaultHeaders = {
     Authorization: `Bearer ${process.env.REACT_APP_AIRTABLE_API_KEY}`,
@@ -43,6 +41,19 @@ function App() {
           isLoading: false,
           todoList: action.payload.todoList
         }
+      case 'SORT_TITLES_AZ':
+        return {
+            ...previousState,
+            isLoading: false,
+            todoList: previousState.todoList.sort((a,b)=> a.title.localeCompare(b.title))
+          }
+
+      case 'SORT_TITLES_ZA':
+        return {
+              ...previousState,
+              isLoading: false,
+              todoList: previousState.todoList.sort((a,b)=> b.title.localeCompare(a.title))
+            }          
       case 'SET_SEARCH_TEXT':
         return {
           ...previousState,
@@ -85,18 +96,26 @@ function App() {
     isLoading: true,
     isError: false,
     searchText: "",
+    sortTitle: false,
 
   }
+
+
+
 
   const [state, dispatchTitle] = useReducer(stateManagementFunction, initialState)
 
   const url = `https://api.airtable.com/v0/${process.env.REACT_APP_AIRTABLE_BASE_ID}/${process.env.REACT_APP_TABLE_NAME}`
 
+
   const refreshRecords = () => {
     dispatchTitle({
       type: 'START_LOADING_TITLES'
     })
-    fetchData({searchText : state.searchText}).then(loadedTodos => {
+    fetchData({
+      searchText : state.searchText, 
+    })
+      .then(loadedTodos => {
       dispatchTitle({
         type: 'FINISH_LOADING_TITLES',
         payload: {
@@ -106,24 +125,27 @@ function App() {
     })
   }
 
+  console.log(state.todoList);
+
   const handleResponse = async (response) => {
     if (!response.ok) {
       throw new Error(`Error: ${response.status}`)
     }
     const data = await response.json()
     const todos = data.records.map((todo) => {
+      console.log(todo.createdTime);
       return {
         createdTime: todo.createdTime,
         title: todo.fields.title,
         id: todo.id
       }
     })
-    console.log(todos);
+
 
     return todos
   }
 
-  
+
   const fetchData = async options => {
 
     try {
@@ -135,11 +157,7 @@ function App() {
         };
       }
 
-      params = {
-          ...params, 
-          'sort[0][field]': 'title',
-          'sort[0][direction]': 'asc',
-        }
+
 
       // if (sortTitle === false) {
       //   params = {
@@ -154,8 +172,7 @@ function App() {
       //     'sort[0][direction]': 'desc',
       //   }
       // }
-
-
+      
 
       
       const response = await fetch (url + "?" + new URLSearchParams(params), 
@@ -176,7 +193,8 @@ function App() {
 
   useEffect(() => {
     refreshRecords()
-  }, [state.searchText, sortTitle])
+  }, [state.searchText])
+
 
   const addTodo = (newTodo) => {
     console.log(newTodo);
@@ -301,6 +319,30 @@ function App() {
     })
 
   }
+
+
+  const toggleSortTitle = () => {
+    if (sortTitle) {
+      dispatchTitle({
+        type: "SORT_TITLES_AZ"
+      })
+    setSortTitle((prevSortTitle) => !prevSortTitle)
+  } else {
+    dispatchTitle({
+      type: "SORT_TITLES_ZA"
+    })
+    setSortTitle((prevSortTitle) => !prevSortTitle)
+
+  }
+  
+}
+
+  const lastTodoIndex = currentPage * todoPerPage
+  const firstTodoIndex = lastTodoIndex - todoPerPage
+  const currentTodos = state.todoList.slice(firstTodoIndex,lastTodoIndex)
+
+  console.log(sortTitle);
+
   
 
   return (
@@ -333,11 +375,17 @@ function App() {
         {state.isLoading ? <p> Loading ... </p> : 
         <TodoList 
         toggleSortTitle={toggleSortTitle}
-        todoList={state.todoList} 
+        todoList={currentTodos} 
         onRemoveTodo={removeTodo}
         onHandleEdit={editTodo}
         />
         }
+
+        <Pagination 
+        totalTodos = {state.todoList.length}
+        todoPerPage={todoPerPage}
+        setCurrentPage={setCurrentPage}
+        />
         </main>
       </div>
       }
