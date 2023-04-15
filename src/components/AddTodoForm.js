@@ -4,6 +4,8 @@ import InputWithLabel from './InputWithLabel'
 import { useNavigate } from 'react-router-dom'
 import paths from '../paths'
 import styles from '../static/App.module.css'
+import PropTypes from 'prop-types'
+
 
 export default function AddTodoForm({ onAddTodo }) {
 
@@ -43,4 +45,8 @@ export default function AddTodoForm({ onAddTodo }) {
 
         </form>
     )
+}
+
+AddTodoForm.propTypes = {
+    onAddTodo: PropTypes.func
 }

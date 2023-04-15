@@ -1,7 +1,7 @@
 
 import React, { useEffect, useState } from 'react';
 import styles from '../static/App.module.css'
-
+import PropTypes from 'prop-types'
 
 const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition
 const mic = new SpeechRecognition()
@@ -89,3 +89,6 @@ function handleSaveNote() {
 
 export default SpeechText;
 
+SpeechText.propTypes = {
+  onAddSpeechTodo: PropTypes.func,
+}

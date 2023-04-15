@@ -2,7 +2,7 @@
 import React, {useState} from 'react';
 import InputWithLabel from './InputWithLabel'
 import styles from '../static/App.module.css'
-
+import PropTypes from 'prop-types'
 
 export default function Search({onSearch}) {
 
@@ -37,4 +37,8 @@ export default function Search({onSearch}) {
 
         </>
     )
+}
+
+Search.propTypes = {
+    onSearch: PropTypes.func
 }

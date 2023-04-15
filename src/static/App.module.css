@@ -235,7 +235,7 @@ h2 {
     margin-top: 1rem;
   }
 
-  .label {
+.label {
     width: 30px;
     height: 15px;
     background-color:#111;
@@ -248,7 +248,7 @@ h2 {
     transform: scale(1.5);
   }
 
-  .ball {
+.ball {
     width: 10px;
     height: 10px;
     background-color: white;
@@ -260,25 +260,18 @@ h2 {
   }
   
   /*  target the elemenent after the label*/
-  .checkbox:checked + .label .ball{
+.checkbox:checked + .label .ball{
     transform: translateX(14px);
   }
   
-  .fa-moon {
+.fa-moon {
     color: pink;
   }
   
-  .fa-sun {
+.fa-sun {
     color: yellow;
-  }
+}
 
 
-  .light {
-    background-color: #ffffff;
-    color: #000000;
-  }
+
   
-  .dark {
-    background-color: #000000;
-    color: #ffffff;
-  }

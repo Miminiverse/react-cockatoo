@@ -1,23 +1,31 @@
 
-import React, { useEffect, useReducer, useState } from 'react';
+import { useEffect, useReducer, useState } from 'react';
+import {BrowserRouter, Routes, Route} from "react-router-dom";
 import TodoList from './components/TodoList'
 import AddTodoForm from './components/AddTodoForm'
 import SpeechText from './components/SpeechText'
 import Search from './components/Search'
-import {BrowserRouter, Routes, Route} from "react-router-dom";
+import ThemeToggle   from './ThemeToggle'
+import ThemeContext from './ThemeContext'
 import styles from './static/App.module.css'
 import "./index.css";
 import paths from './paths'
-import ThemeToggle   from './ThemeToggle'
-import {ThemeContext}  from './ThemeContext'
 
 
 function App() {
-  const [isDarkMode, setIsDarkMode] = useState(false)
+  const [isDarkMode, setIsDarkMode] = useState(true)
+  const [sortTitle, setSortTitle] = useState(false)
 
   function toggleTheme () {
     setIsDarkMode((prevIsDarkMode) => !prevIsDarkMode)
   }
+  
+  function toggleSortTitle () {
+    setSortTitle((prevSortTitle) => !prevSortTitle)
+
+  }
+
+  console.log(sortTitle);
 
   const defaultHeaders = {
     Authorization: `Bearer ${process.env.REACT_APP_AIRTABLE_API_KEY}`,
@@ -51,6 +59,17 @@ function App() {
           ...previousState,
           todoList: [...previousState.todoList, action.payload.newTodo]
         }
+      case 'EDIT_TODO':
+        return {
+          ...previousState,
+          todoList: 
+          previousState.todoList.map((todo) => {
+            if (todo.id === action.payload.editTodo.id) {
+              todo.title = action.payload.editTodo.title
+            }
+            return todo
+          }) 
+        }
       case 'REMOVE_TODO':
         return {
           ...previousState,
@@ -65,7 +84,8 @@ function App() {
     todoList: [],
     isLoading: true,
     isError: false,
-    searchText: ""
+    searchText: "",
+
   }
 
   const [state, dispatchTitle] = useReducer(stateManagementFunction, initialState)
@@ -93,10 +113,13 @@ function App() {
     const data = await response.json()
     const todos = data.records.map((todo) => {
       return {
+        createdTime: todo.createdTime,
         title: todo.fields.title,
         id: todo.id
       }
     })
+    console.log(todos);
+
     return todos
   }
 
@@ -109,10 +132,30 @@ function App() {
         params = {
           ...params, 
           filterByFormula: `SEARCH('${options.searchText.toLowerCase()}', {title})`,
-          'sort[0][field]': 'title',
-          'sort[0][direction]': 'desc',
         };
       }
+
+      params = {
+          ...params, 
+          'sort[0][field]': 'title',
+          'sort[0][direction]': 'asc',
+        }
+
+      // if (sortTitle === false) {
+      //   params = {
+      //     ...params, 
+      //     'sort[0][field]': 'title',
+      //     'sort[0][direction]': 'asc',
+      //   }
+      // } else {
+      //   params = {
+      //     ...params, 
+      //     'sort[0][field]': 'title',
+      //     'sort[0][direction]': 'desc',
+      //   }
+      // }
+
+
 
       
       const response = await fetch (url + "?" + new URLSearchParams(params), 
@@ -121,6 +164,7 @@ function App() {
         method: "GET",
       }
       )
+
       return handleResponse(response)
 
     } catch (error) {
@@ -132,9 +176,10 @@ function App() {
 
   useEffect(() => {
     refreshRecords()
-  }, [state.searchText])
+  }, [state.searchText, sortTitle])
 
   const addTodo = (newTodo) => {
+    console.log(newTodo);
     fetch (url, {
       method: 'POST',
       headers: {  
@@ -197,8 +242,10 @@ function App() {
     })
   }
 
+
+
   const addSpeechTodo = (newSpeechNote) => {
-    console.log(newSpeechNote)
+
     fetch (url, {
       method: 'POST',
       headers: {  
@@ -223,6 +270,37 @@ function App() {
     })
     })
   }
+
+
+  const editTodo = (editTodo) => {
+    const urlEdit = `https://api.airtable.com/v0/${process.env.REACT_APP_AIRTABLE_BASE_ID}/${process.env.REACT_APP_TABLE_NAME}/${editTodo.id}`
+    fetch (urlEdit, {
+      method: 'PUT',
+      headers: {  
+        ...defaultHeaders,
+        'Content-Type': 'application/json',
+    },
+      body: JSON.stringify({
+        fields: {
+          title: editTodo.title
+        }})})
+    .then (response => response.json())
+    .then (data => { 
+      // refreshRecords()
+      const editTodo = 
+       {
+        title: data.fields.title,
+        id: data.id
+      }
+      dispatchTitle({
+        type: "EDIT_TODO",
+        payload: {
+          editTodo: editTodo 
+        }
+    })
+    })
+
+  }
   
 
   return (
@@ -246,11 +324,19 @@ function App() {
         <h2>Bored of writing 😶‍🌫️ Speak to me 🤗</h2>
         <SpeechText onAddSpeechTodo={addSpeechTodo}/>
         </div>
+        <div>
+ 
+        </div>
         </header>
 
         <main>
         {state.isLoading ? <p> Loading ... </p> : 
-        <TodoList todoList={state.todoList} onRemoveTodo={removeTodo}/>
+        <TodoList 
+        toggleSortTitle={toggleSortTitle}
+        todoList={state.todoList} 
+        onRemoveTodo={removeTodo}
+        onHandleEdit={editTodo}
+        />
         }
         </main>
       </div>
