@@ -290,4 +290,9 @@ h2 {
 
 }
 
+
+.sort {
+    display: flex;
+    justify-content: space-between;
+}
   

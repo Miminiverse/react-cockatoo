@@ -3,10 +3,11 @@ import TodoListItem from './TodoListItem';
 import styles from '../static/App.module.css'
 import PropTypes from 'prop-types'
 
-export default function TodoList({todoList, onRemoveTodo, onHandleEdit, toggleSortTitle}) {
+export default function TodoList({todoList, onRemoveTodo, onHandleEdit, toggleSortTitle, toggleSortTime}) {
     return (
         <>
             <div className={styles.todoList}>
+            <div className={styles.sort}>
             <div className={styles.wrapCheckbox}>
             <p>A-Z</p>
             <input 
@@ -23,6 +24,25 @@ export default function TodoList({todoList, onRemoveTodo, onHandleEdit, toggleSo
             <i className='fas fa-sun'></i>
             <div className={styles.ball} />
             </label>
+            </div>
+
+            <div className={styles.wrapCheckbox}>
+            <p>Latest</p>
+            <input 
+            type="checkbox" 
+            id="sortTime"
+            className={styles.checkbox} 
+            onChange={toggleSortTime}
+
+            />
+            <label 
+            htmlFor="sortTime" 
+            className={styles.label}>
+            <i className="fas fa-moon"></i>
+            <i className='fas fa-sun'></i>
+            <div className={styles.ball} />
+            </label>
+            </div>
             </div>
 
                 <h2>Task</h2>

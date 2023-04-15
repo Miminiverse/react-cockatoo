@@ -16,6 +16,7 @@ import paths from './paths'
 function App() {
   const [isDarkMode, setIsDarkMode] = useState(true)
   const [sortTitle, setSortTitle] = useState(true)
+  const [sortTime, setSortTime] = useState(true)
   const [currentPage, setCurrentPage] = useState(1)
   const [todoPerPage] = useState(10)
 
@@ -53,7 +54,19 @@ function App() {
               ...previousState,
               isLoading: false,
               todoList: previousState.todoList.sort((a,b)=> b.title.localeCompare(a.title))
-            }          
+            }  
+      case 'SORT_TIME':
+        return {
+              ...previousState,
+              isLoading: false,
+              todoList: previousState.todoList.sort((a,b)=> a.createdTime.localeCompare(b.createdTime))
+            }                
+      case 'SORT_TIME_LATEST':
+        return {
+              ...previousState,
+              isLoading: false,
+              todoList: previousState.todoList.sort((a,b)=> b.createdTime.localeCompare(a.createdTime))
+            }      
       case 'SET_SEARCH_TEXT':
         return {
           ...previousState,
@@ -125,7 +138,7 @@ function App() {
     })
   }
 
-  console.log(state.todoList);
+
 
   const handleResponse = async (response) => {
     if (!response.ok) {
@@ -133,7 +146,7 @@ function App() {
     }
     const data = await response.json()
     const todos = data.records.map((todo) => {
-      console.log(todo.createdTime);
+
       return {
         createdTime: todo.createdTime,
         title: todo.fields.title,
@@ -337,11 +350,27 @@ function App() {
   
 }
 
+
+const toggleSortTime = () => {
+  if (sortTime) {
+    dispatchTitle({
+      type: "SORT_TIME_LATEST"
+    })
+  setSortTime((prevSortTime) => !prevSortTime)
+} else {
+  dispatchTitle({
+    type: "SORT_TIME"
+  })
+  setSortTime((prevSortTime) => !prevSortTime)
+}
+
+}
+
   const lastTodoIndex = currentPage * todoPerPage
   const firstTodoIndex = lastTodoIndex - todoPerPage
   const currentTodos = state.todoList.slice(firstTodoIndex,lastTodoIndex)
 
-  console.log(sortTitle);
+
 
   
 
@@ -375,6 +404,7 @@ function App() {
         {state.isLoading ? <p> Loading ... </p> : 
         <TodoList 
         toggleSortTitle={toggleSortTitle}
+        toggleSortTime={toggleSortTime}
         todoList={currentTodos} 
         onRemoveTodo={removeTodo}
         onHandleEdit={editTodo}
