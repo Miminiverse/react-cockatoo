@@ -1,23 +1,29 @@
 
-import React, {useState} from 'react';
+import React, {ChangeEvent, useState} from 'react';
 import InputWithLabel from './InputWithLabel'
 import { useNavigate } from 'react-router-dom'
 import paths from '../paths'
 import styles from '../static/App.module.css'
-import PropTypes from 'prop-types'
+import {Todo} from '../types'
 
 
-export default function AddTodoForm({ onAddTodo }) {
 
-    const [todoTitle, setTodoTitle] = useState('')
+interface AddTodoProps {
+    onAddTodo: (todo: Todo) => void
+}
+
+
+export default function AddTodoForm({onAddTodo}: AddTodoProps ): JSX.Element {
+
+    const [todoTitle, setTodoTitle] = useState<string>('')
     const navigate = useNavigate()
 
-    function handleTitleChange (e){
-        const newTodoTitle = e.target.value;
+    function handleTitleChange (e: ChangeEvent<HTMLInputElement>): void{
+        const newTodoTitle: string = e.target.value;
         setTodoTitle(newTodoTitle)
     }
 
-    function handleAddTodo(e) {
+    function handleAddTodo(e: ChangeEvent<HTMLFormElement>): void {
         e.preventDefault()
         if (!todoTitle) {
             alert("Please enter a title")
@@ -47,6 +53,3 @@ export default function AddTodoForm({ onAddTodo }) {
     )
 }
 
-AddTodoForm.propTypes = {
-    onAddTodo: PropTypes.func
-}

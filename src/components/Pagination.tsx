@@ -1,8 +1,15 @@
 import styles from '../static/App.module.css'
+import React from 'react'
 
-const Pagination = ({totalTodos, todoPerPage,setCurrentPage}) => {
+interface PaginationProps {
+totalTodos: number;
+todoPerPage: number;
+setCurrentPage: (page: number) => void;
+}
 
-    let pages = []
+const Pagination = ({totalTodos, todoPerPage,setCurrentPage}: PaginationProps) => {
+
+    let pages: number[] = []
 
     for (let i = 1; i<= Math.ceil(totalTodos/todoPerPage); i++) {
         pages.push(i)
@@ -11,7 +18,7 @@ const Pagination = ({totalTodos, todoPerPage,setCurrentPage}) => {
     return (
         <>
         <div className={styles.pagination}>
-        {pages.map((page, idx) => 
+        {pages.map((page: number, idx: number) => 
         <button              
         className={styles.buttonPagination}
         key={idx}

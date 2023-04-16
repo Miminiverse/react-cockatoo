@@ -1,10 +1,16 @@
-import React, {useState} from 'react';
+import React, {ChangeEvent, useState} from 'react';
 import styles from '../static/App.module.css'
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
 import Modal from 'react-bootstrap/Modal';
 import "bootstrap/dist/css/bootstrap.min.css";
-import PropTypes from 'prop-types'
+// import {Todo} from '../types'
+
+// interface TodoListItemProps {
+//   todo: Todo;
+//   onRemoveTodo: (todo: Todo) => void;
+//   onHandleEdit: (todo: Todo) => void;
+// }
 
 export default function TodoListItem({todo, onRemoveTodo, onHandleEdit}) {
 
@@ -19,13 +25,14 @@ export default function TodoListItem({todo, onRemoveTodo, onHandleEdit}) {
         setShow(true)
     }
 
-    const handleSaveEdit = id => {
+    const handleSaveEdit = (id) => {
+      if (id !== undefined )  {
         onHandleEdit({
-            id,
-            title: editValue,
-        })
-        setShow(false)
-
+          id,
+          title: editValue,
+      })
+      setShow(false)
+    }
     }
 
 
@@ -88,9 +95,3 @@ export default function TodoListItem({todo, onRemoveTodo, onHandleEdit}) {
     )
 }
 
-
-TodoListItem.propTypes = {
-  todo: PropTypes.object,
-  onRemoveTodo: PropTypes.func,
-  onHandleEdit: PropTypes.func,
-}

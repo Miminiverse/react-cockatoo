@@ -1,7 +1,8 @@
 
 import React, { useEffect, useState } from 'react';
 import styles from '../static/App.module.css'
-import PropTypes from 'prop-types'
+
+declare var window: any;
 
 const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition
 const mic = new SpeechRecognition()
@@ -10,9 +11,13 @@ mic.continuous = true
 mic.interimResults = true
 mic.lang = 'en-US'
 
-function SpeechText({onAddSpeechTodo}) {
+interface SpeechTextProps {
+  onAddSpeechTodo: (note: {title: string}) => void
+}
+
+export default function SpeechText({onAddSpeechTodo}: SpeechTextProps) {
 const [isListening, setIsListening] = useState(false)
-const [note, setNote] = useState(null)
+const [note, setNote] = useState<string | null>(null)
 
 
 useEffect(() => {
@@ -36,13 +41,13 @@ const handleListen = () => {
     console.log('Mics on')
   }
 
-  mic.onresult = event => {
-    const transcript = Array.from(event.results)
+  mic.onresult = (event: any) => {
+    const transcript = Array.from(event.results as Array<{ [key: string]: any}>)
       .map(result => result[0])
       .map(result => result.transcript)
       .join('')
     setNote(transcript)
-    mic.onerror = event => {
+    mic.onerror = (event: any) => {
       console.log(event.error)
     }
   }
@@ -86,9 +91,3 @@ function handleSaveNote() {
     </>
 )}
 
-
-export default SpeechText;
-
-SpeechText.propTypes = {
-  onAddSpeechTodo: PropTypes.func,
-}

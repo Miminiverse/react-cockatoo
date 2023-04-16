@@ -1,9 +1,20 @@
 import React from 'react';
 import TodoListItem from './TodoListItem';
 import styles from '../static/App.module.css'
-import PropTypes from 'prop-types'
+import {Todo} from '../types'
 
-export default function TodoList({todoList, onRemoveTodo, onHandleEdit, toggleSortTitle, toggleSortTime}) {
+
+
+interface TodoListProps {
+    todoList: Todo[];
+    onRemoveTodo: (id:number) => void;
+    onHandleEdit: (id: number, newTitle: string) => void;
+    toggleSortTitle: () => void;
+    toggleSortTime: () => void;
+}
+
+
+export default function TodoList({todoList, onRemoveTodo, onHandleEdit, toggleSortTitle, toggleSortTime}: TodoListProps) {
     return (
         <>
             <div className={styles.todoList}>
@@ -47,22 +58,17 @@ export default function TodoList({todoList, onRemoveTodo, onHandleEdit, toggleSo
 
                 <h2>Task</h2>
                 { todoList ? todoList.map((todo) => (
-                        <TodoListItem
-                            key={todo.id}
-                            todo={todo} 
-                            onRemoveTodo = {onRemoveTodo}
-                            onHandleEdit={onHandleEdit}
-                            />
+                    <TodoListItem
+                        key={todo.id}
+                        todo={todo} 
+                        onRemoveTodo = {onRemoveTodo}
+                        onHandleEdit={onHandleEdit}
+                    />
                     )) : null }
             </div>
         </>
     )
 }
 
-TodoList.propTypes = {
-    todoList: PropTypes.array,
-    onRemoveTodo: PropTypes.func,
-    onHandleEdit: PropTypes.func,
-}
 
 
