@@ -1,6 +1,6 @@
 
 import React, {ChangeEvent, useState} from 'react';
-import InputWithLabel from './InputWithLabel'
+import InputWithLabel from './InputWithLabel.tsx'
 import { useNavigate } from 'react-router-dom'
 import paths from '../paths'
 import styles from '../static/App.module.css'

@@ -1,23 +1,16 @@
 
 import { useEffect, useReducer, useState } from 'react';
 import {BrowserRouter, Routes, Route} from "react-router-dom";
-import TodoList from './components/TodoList.tsx'
-import AddTodoForm from './components/AddTodoForm.tsx'
-import SpeechText from './components/SpeechText.tsx'
-import Search from './components/Search.tsx'
-import Pagination from './components/Pagination.tsx'
+import TodoList from './components/TodoList'
+import AddTodoForm from './components/AddTodoForm'
+import SpeechText from './components/SpeechText'
+import Search from './components/Search'
+import Pagination from './components/Pagination'
 import ThemeToggle   from './ThemeToggle'
 import ThemeContext from './ThemeContext'
 import styles from './static/App.module.css'
 import "./index.css";
 import paths from './paths'
-
-
-
-
-
-
-
 
 
 function App() {

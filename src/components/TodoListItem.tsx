@@ -4,28 +4,28 @@ import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
 import Modal from 'react-bootstrap/Modal';
 import "bootstrap/dist/css/bootstrap.min.css";
-// import {Todo} from '../types'
+import {Todo} from '../types'
 
-// interface TodoListItemProps {
-//   todo: Todo;
-//   onRemoveTodo: (todo: Todo) => void;
-//   onHandleEdit: (todo: Todo) => void;
-// }
+interface TodoListItemProps {
+  todo: Todo;
+  onRemoveTodo: (todo: Todo) => void;
+  onHandleEdit: (todo: Todo) => void;
+}
 
-export default function TodoListItem({todo, onRemoveTodo, onHandleEdit}) {
+export default function TodoListItem({todo, onRemoveTodo, onHandleEdit}: TodoListItemProps) {
 
     const [editValue, setEditValue] = useState("")
     const [show, setShow] = useState(false);
 
-    const handleChange = (e) => {
+    const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
         setEditValue(e.target.value)
     }
 
-    const handleShowEdit = (todo) => {
+    const handleShowEdit = (todo: Todo) => {
         setShow(true)
     }
 
-    const handleSaveEdit = (id) => {
+    const handleSaveEdit = (id: number | undefined) => {
       if (id !== undefined )  {
         onHandleEdit({
           id,

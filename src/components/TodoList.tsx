@@ -1,14 +1,13 @@
 import React from 'react';
-import TodoListItem from './TodoListItem';
+import TodoListItem from './TodoListItem.tsx';
 import styles from '../static/App.module.css'
 import {Todo} from '../types'
 
 
-
 interface TodoListProps {
     todoList: Todo[];
-    onRemoveTodo: (id:number) => void;
-    onHandleEdit: (id: number, newTitle: string) => void;
+    onRemoveTodo: (todo: Todo) => void;
+    onHandleEdit: (todo: Todo) => void;
     toggleSortTitle: () => void;
     toggleSortTime: () => void;
 }
@@ -62,7 +61,7 @@ export default function TodoList({todoList, onRemoveTodo, onHandleEdit, toggleSo
                         key={todo.id}
                         todo={todo} 
                         onRemoveTodo = {onRemoveTodo}
-                        onHandleEdit={onHandleEdit}
+                        onHandleEdit= {onHandleEdit}
                     />
                     )) : null }
             </div>
