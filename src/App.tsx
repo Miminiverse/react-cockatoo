@@ -1,35 +1,59 @@
 
-import { useEffect, useReducer, useState } from 'react';
-import {BrowserRouter, Routes, Route} from "react-router-dom";
+import React, { useEffect, useReducer, useState } from 'react';
+import {BrowserRouter, Routes, Route,RouteProps} from "react-router-dom";
 import TodoList from './components/TodoList'
 import AddTodoForm from './components/AddTodoForm'
 import SpeechText from './components/SpeechText'
+import SpeechTextUpload from './components/SpeechTextUpload'
 import Search from './components/Search'
 import Pagination from './components/Pagination'
 import ThemeToggle   from './ThemeToggle'
 import ThemeContext from './ThemeContext'
 import styles from './static/App.module.css'
+import {Todo} from './types'
 import "./index.css";
 import paths from './paths'
 
 
 function App() {
-  const [isDarkMode, setIsDarkMode] = useState(true)
-  const [sortTitle, setSortTitle] = useState(true)
-  const [sortTime, setSortTime] = useState(true)
-  const [currentPage, setCurrentPage] = useState(1)
-  const [todoPerPage] = useState(10)
+  const [isDarkMode, setIsDarkMode] = useState<boolean>(true)
+  const [sortTitle, setSortTitle] = useState<boolean>(true)
+  const [sortTime, setSortTime] = useState<boolean>(true)
+  const [currentPage, setCurrentPage] = useState<number>(1)
+  const [todoPerPage] = useState<number>(10)
 
   function toggleTheme () {
     setIsDarkMode((prevIsDarkMode) => !prevIsDarkMode)
   }
   
 
-
   const defaultHeaders = {
     Authorization: `Bearer ${process.env.REACT_APP_AIRTABLE_API_KEY}`,
   }
-  const stateManagementFunction = (previousState, action) => {
+
+interface State {
+  todoList: Todo[];
+  isLoading: boolean;
+  isError: boolean;
+  searchText: string;
+  sortTitle: boolean;
+}
+
+type Action = 
+  | { type: 'START_LOADING_TITLES'}
+  | { type: 'FINISH_LOADING_TITLES'; payload: { todoList: Todo[]}}
+  | { type: 'SORT_TITLES_AZ'}
+  | { type: 'SORT_TITLES_ZA'}
+  | { type: 'SORT_TIME'}
+  | { type: 'SORT_TIME_LATEST'}
+  | { type: 'SET_SEARCH_TEXT'; payload: {searchText: string}}
+  | { type: 'ERROR_LOADING_TITLES'}
+  | { type: 'ADD_TODO'; payload:  {newTodo: Todo}}
+  | { type: 'EDIT_TODO'; payload: { editTodo: Todo}}
+  | { type: 'REMOVE_TODO'; payload: {id: number}}
+
+
+  const stateManagementFunction = (previousState: State, action: Action): State => {
     switch (action.type) {
       case 'START_LOADING_TITLES':
         return {
@@ -59,14 +83,36 @@ function App() {
         return {
               ...previousState,
               isLoading: false,
-              todoList: previousState.todoList.sort((a,b)=> a.createdTime.localeCompare(b.createdTime))
+              todoList: previousState.todoList.sort((a,b)=> {
+                if (a.createdTime && b.createdTime) {
+                  if (a.createdTime < b.createdTime) {
+                    return -1;
+                  } else if ( a.createdTime > b.createdTime) {
+                    return 1;
+                  } else {
+                    return 0
+                  }
+                }
+                return 0
+              })
             }                
       case 'SORT_TIME_LATEST':
         return {
-              ...previousState,
-              isLoading: false,
-              todoList: previousState.todoList.sort((a,b)=> b.createdTime.localeCompare(a.createdTime))
-            }      
+          ...previousState,
+          isLoading: false,
+          todoList: previousState.todoList.sort((a,b)=> {
+            if (a.createdTime && b.createdTime) {
+              if (b.createdTime < a.createdTime) {
+                return -1;
+              } else if ( b.createdTime > a.createdTime) {
+                return 1;
+              } else {
+                return 0
+              }
+            }
+            return 0
+          })
+        }      
       case 'SET_SEARCH_TEXT':
         return {
           ...previousState,
@@ -113,9 +159,6 @@ function App() {
 
   }
 
-
-
-
   const [state, dispatchTitle] = useReducer(stateManagementFunction, initialState)
 
   const url = `https://api.airtable.com/v0/${process.env.REACT_APP_AIRTABLE_BASE_ID}/${process.env.REACT_APP_TABLE_NAME}`
@@ -138,14 +181,24 @@ function App() {
     })
   }
 
+  interface TodosResponse {
+    records: {
+      id: number,
+      fields: {
+        title: string
+      }
+      createdTime?: number,
+    } []
+  }
 
 
-  const handleResponse = async (response) => {
+  const handleResponse = async (response: Response): Promise<Todo[]> => {
     if (!response.ok) {
       throw new Error(`Error: ${response.status}`)
     }
-    const data = await response.json()
-    const todos = data.records.map((todo) => {
+    const data: TodosResponse = await response.json()
+
+    const todos: Todo[] = data.records.map((todo) => {
 
       return {
         createdTime: todo.createdTime,
@@ -153,24 +206,23 @@ function App() {
         id: todo.id
       }
     })
-
-
     return todos
   }
 
+  interface Options {
+    searchText?: string
+  }
 
-  const fetchData = async options => {
+  const fetchData = async (options: Options): Promise<any> => {
 
     try {
-      let params = {}
+      let params: any = {}
       if (options?.searchText) {
         params = {
           ...params, 
           filterByFormula: `SEARCH('${options.searchText.toLowerCase()}', {title})`,
         };
       }
-
-
 
       // if (sortTitle === false) {
       //   params = {
@@ -186,15 +238,12 @@ function App() {
       //   }
       // }
       
-
-      
       const response = await fetch (url + "?" + new URLSearchParams(params), 
       {
         headers: { ...defaultHeaders },
         method: "GET",
       }
       )
-
       return handleResponse(response)
 
     } catch (error) {
@@ -208,37 +257,52 @@ function App() {
     refreshRecords()
   }, [state.searchText])
 
+  interface AddTodoResponse {
+    id: number;
+    fields: {
+      title: string
+    };
+    createdTime: number;
+  }
 
-  const addTodo = (newTodo) => {
-    console.log(newTodo);
-    fetch (url, {
+  const addTodo = async (newTodo: Todo): Promise<any> => {
+    const options = {
       method: 'POST',
       headers: {  
         ...defaultHeaders,
         'Content-Type': 'application/json',
-        
     },
-      body: JSON.stringify({fields: newTodo})
+    body: JSON.stringify({fields: newTodo})
+  }
+    try {
+      const response = await fetch (url, options)
+    if (!response.ok) {
+        throw new Error(`Error: ${response.status}`)
     }
-    )
-    .then (response => response.json())
-    .then (data => { 
+    const data: AddTodoResponse = await response.json()
+    console.log(data);
+    if (data) {
       const addTodo = 
-       {
-        title: data.fields.title,
-        id: data.id
-      }
+      {
+       title: data.fields.title,
+       id: data.id
+     }
+     dispatchTitle({
+       type: "ADD_TODO",
+       payload: {
+         newTodo: addTodo 
+       }
+   })
+    }
+    } catch (err) {
       dispatchTitle({
-        type: "ADD_TODO",
-        payload: {
-          newTodo: addTodo 
-        }
+        type: 'ERROR_LOADING_TITLES'
     })
-    })
+    }
   }
 
 
-  const removeTodo = async (todo) => {
+  const removeTodo = async (todo: Todo): Promise<any> => {
 
     const urlDel = `https://api.airtable.com/v0/${process.env.REACT_APP_AIRTABLE_BASE_ID}/${process.env.REACT_APP_TABLE_NAME}/${todo.id}`
     const options ={
@@ -253,6 +317,7 @@ function App() {
     if (!response.ok) {
       throw new Error(`Error: ${response.status}`)
     }
+
     dispatchTitle({
       type: "REMOVE_TODO",
       payload: {
@@ -266,7 +331,9 @@ function App() {
   }
 }
 
-  const onSearch = searchText => {
+
+
+  const onSearch = (searchText:string) => {
     dispatchTitle ({
       type: 'SET_SEARCH_TEXT',
       payload: {searchText},
@@ -275,7 +342,7 @@ function App() {
 
 
 
-  const addSpeechTodo = (newSpeechNote) => {
+  const addSpeechTodo = (newSpeechNote: Todo) => {
 
     fetch (url, {
       method: 'POST',
@@ -303,7 +370,7 @@ function App() {
   }
 
 
-  const editTodo = (editTodo) => {
+  const editTodo = (editTodo: Todo) => {
     const urlEdit = `https://api.airtable.com/v0/${process.env.REACT_APP_AIRTABLE_BASE_ID}/${process.env.REACT_APP_TABLE_NAME}/${editTodo.id}`
     fetch (urlEdit, {
       method: 'PUT',
@@ -317,7 +384,6 @@ function App() {
         }})})
     .then (response => response.json())
     .then (data => { 
-      // refreshRecords()
       const editTodo = 
        {
         title: data.fields.title,
@@ -371,7 +437,6 @@ const toggleSortTime = () => {
   const currentTodos = state.todoList.slice(firstTodoIndex,lastTodoIndex)
 
 
-
   return (
     <ThemeContext.Provider value={{isDarkMode, toggleTheme}} >
       <div className={`App ${isDarkMode ? 'dark' : 'light'}`}>
@@ -392,6 +457,7 @@ const toggleSortTime = () => {
         <div className={styles.wrapSpeech}>
         <h2>Bored of writing 😶‍🌫️ Speak to me 🤗</h2>
         <SpeechText onAddSpeechTodo={addSpeechTodo}/>
+        <SpeechTextUpload /> 
         </div>
         <div>
  
