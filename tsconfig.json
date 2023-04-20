@@ -1,8 +1,15 @@
 {
+  "include": ["src"],
+  "extends": "./tsconfig.paths.json", // 👈 add this line
   "compilerOptions": {
     "allowImportingTsExtensions": true,
     "noEmit": true,
-    "baseUrl": "src",
+    // "baseUrl": ".",
+    // "paths": {
+    //   "@root/*": ["*"],
+    //   // "@components/*": ["src/components/*"],
+    //   // "@static/*": ["src/static/*"]
+    // },
     /* Visit https://aka.ms/tsconfig to read more about this file */
 
     /* Projects */
