@@ -6,7 +6,6 @@
     --light: #EEE;
     --pink: #EC4899;
     --purple: #8B5CF6;
-
 }
 
 * {
@@ -179,7 +178,7 @@ h2 {
     margin: 0.5rem 0.3rem;
 }
 
-.buttonRemove {
+.button {
     cursor: pointer;
     margin: 0 0.5rem;
     font-size: 1.125rem;
@@ -190,39 +189,13 @@ h2 {
     -webkit-text-fill-color: transparent;
 }
 
-.buttonSpeech {
-    cursor: pointer;
-    margin: 0 0.5rem;
-    font-size: 1.125rem;
-    font-weight: 700;
-    transition: 0.4s;
-    background-image: linear-gradient(to right, var(--pink), var(--purple));
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
+.wrapCheckbox {
+    margin-top: 1rem;
+    margin-left: 1rem;
 }
 
-.buttonAdd:hover {
-    opacity: 0.8;
-}
 
-.button:active {
-    opacity: 0.6;
-}
 
-.boxSpeech {
-    align-items: center;
-    text-align: center;
-
-}
-
-@media (15em <= width <= 35em) {
-    .wrap {
-        flex-direction: column;
-    }
-    .wrap > * {
-        flex: none;
-    }
-}
 
 .wrapCheckbox {
     margin-top: 1rem;
@@ -258,8 +231,9 @@ h2 {
     border-radius: 50%;
     transition: transform 0.2s linear;
   }
-  
-  /*  target the elemenent after the label*/
+
+
+
 .checkbox:checked + .label .ball{
     transform: translateX(14px);
   }
@@ -272,24 +246,42 @@ h2 {
     color: yellow;
 }
 
-.buttonPagination {
-    cursor: pointer;
-    margin: 0 0.5rem;
-    font-size: 1rem;
-    font-weight: 700;
-    transition: 0.4s;
-    background-image: linear-gradient(to right, var(--pink), var(--purple));
-    -webkit-background-clip: text;
-    -webkit-text-fill-color: transparent;
+.buttonAdd:hover {
+    opacity: 0.8;
 }
+
+.button:active {
+    opacity: 0.6;
+}
+
+.boxSpeech {
+    align-items: center;
+    text-align: center;
+
+}
+
+@media (15em <= width <= 35em) {
+    .wrap {
+        flex-direction: column;
+    }
+    .wrap > * {
+        flex: none;
+    }
+}
+
+
+
+
+  
+
+
+
 
 .pagination {
     align-items: center;
     justify-content: center;
     text-align: center;
-
 }
-
 
 .sort {
     display: flex;

@@ -1,10 +1,10 @@
 
 import React, {ChangeEvent, useState} from 'react';
-import InputWithLabel from './InputWithLabel.tsx'
 import { useNavigate } from 'react-router-dom'
-import paths from '../paths/paths.tsx'
-import styles from '../static/App.module.css'
-import {Todo} from '../types'
+import InputWithLabel from '@root/forms/InputWithLabel'
+import paths from '@root/paths/paths.tsx'
+import styles from '@asset/App.module.css'
+import {Todo} from '@root/types'
 
 
 

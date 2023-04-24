@@ -1,10 +1,10 @@
 import React, {ChangeEvent, useState} from 'react';
-import styles from '../static/App.module.css'
+import "bootstrap/dist/css/bootstrap.min.css";
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
 import Modal from 'react-bootstrap/Modal';
-import "bootstrap/dist/css/bootstrap.min.css";
-import {Todo} from '../types'
+import styles from '@asset/App.module.css'
+import {Todo} from '@root/types'
 
 interface TodoListItemProps {
   todo: Todo;
@@ -43,7 +43,7 @@ export default function TodoListItem({todo, onRemoveTodo, onHandleEdit}: TodoLis
                 <span>{todo.title} </span>
             <div>
             <button
-             className={styles.buttonRemove}
+             className={styles.button}
              type="button"
              onClick={() => 
               onRemoveTodo(todo)
@@ -51,7 +51,7 @@ export default function TodoListItem({todo, onRemoveTodo, onHandleEdit}: TodoLis
             >Remove
             </button>
             <button
-             className={styles.buttonRemove}
+             className={styles.button}
              type="button"
              onClick={() => handleShowEdit(todo)}
              
@@ -82,7 +82,7 @@ export default function TodoListItem({todo, onRemoveTodo, onHandleEdit}: TodoLis
         </Modal.Body>
         <Modal.Footer>
           <Button
-            className={styles.buttonRemove}
+            className={styles.button}
 
            onClick={() => handleSaveEdit(todo.id)}>
             Save Changes

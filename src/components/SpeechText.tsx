@@ -1,6 +1,6 @@
 
 import React, { useEffect, useState } from 'react';
-import styles from '../static/App.module.css'
+import styles from '@asset/App.module.css'
 
 declare var window: any;
 
@@ -71,12 +71,12 @@ function handleSaveNote() {
         <div className={styles.boxSpeech}>
           {isListening ? <span>🎙️</span> : <span>🛑</span>}
           <button 
-            className={styles.buttonSpeech} 
+            className={styles.button} 
           onClick={() => setIsListening(prevState => !prevState)}>
             Start/Stop
           </button>
           <button
-          className={styles.buttonSpeech} 
+          className={styles.button} 
           onClick={handleSaveNote} 
           disabled={!note}>
             Add

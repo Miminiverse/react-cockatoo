@@ -1,5 +1,5 @@
 import React, {ChangeEvent, useState} from 'react'
-import styles from '../static/App.module.css'
+import styles from '@asset/App.module.css'
 
 const SpeechTextUpload = () => {
 
