@@ -97,7 +97,6 @@ function handleSaveNote() {
           <p>{note}</p>
         </div>
         : null}
-
         </div>
 
     </>

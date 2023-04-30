@@ -1,11 +1,12 @@
 
 import React, { useEffect, useReducer, useState } from 'react';
 import {BrowserRouter, Routes, Route} from "react-router-dom";
-import {stateManagementFunction, initialState} from '@components/TodoState'
+import {stateManagementFunction, initialState} from './components/TodoState'
 import TodoList from '@root/pages/TodoList'
 import AddTodoForm from "@root/forms/AddTodoForm";
 import SpeechText from '@components/SpeechText'
 import SpeechTextUpload from '@components/SpeechTextUpload'
+import NavBar from '@components/NavBar'
 import Search from '@root/forms/Search'
 import Pagination from '@components/Pagination'
 import ThemeToggle   from '@components/ThemeToggle'
@@ -15,6 +16,7 @@ import {Todo} from '@root/types'
 import "@root/index.css"
 import paths from '@root/paths'
 import TodoItem from '@root/pages/TodoItem';
+import { Nav } from 'react-bootstrap';
 
 
 function App() {
@@ -277,14 +279,13 @@ const toggleSortTime = () => {
     <ThemeContext.Provider value={{isDarkMode, toggleTheme}} >
       <div className={`App ${isDarkMode ? 'dark' : 'light'}`}>
     <BrowserRouter>
+    <NavBar />
     <Routes>
 
       <Route exact path={paths.HOME} 
       element = {
         <div className={styles.body} >
         <div className={styles.wrapHead} >
-        <ThemeToggle />
-        <p> 📓 TodoList 📓</p>
         </div>
         <header>
 
