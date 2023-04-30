@@ -5,7 +5,7 @@
         "@root/*": ["src/*"],
         "@asset/*": ["src/asset/*"],
         "@components/*": ["src/components/*"],
-        "@pages/*": ["src/pages/*"],
+        "@pages/*": ["src/pages/*"]
       }
     }
 }

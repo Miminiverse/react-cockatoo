@@ -9,14 +9,13 @@ import SpeechTextUpload from '@components/SpeechTextUpload'
 import NavBar from '@components/NavBar'
 import Search from '@root/forms/Search'
 import Pagination from '@components/Pagination'
-import ThemeToggle   from '@components/ThemeToggle'
 import ThemeContext from '@root/context/ThemeContext'
 import styles from '@asset/App.module.css'
 import {Todo} from '@root/types'
 import "@root/index.css"
 import paths from '@root/paths'
 import TodoItem from '@root/pages/TodoItem';
-import { Nav } from 'react-bootstrap';
+
 
 
 function App() {
@@ -320,7 +319,6 @@ const toggleSortTime = () => {
         onHandleEdit={editTodo}
         />
         }
-
         <Pagination 
         totalTodos = {state.todoList.length}
         todoPerPage={todoPerPage}
