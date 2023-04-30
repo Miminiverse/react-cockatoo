@@ -96,6 +96,8 @@ input, button {
     color: var(--gray);
 }
 
+
+
 .buttonAdd {
     color: var(--pink);
     font-size: 1.25rem;
@@ -108,7 +110,6 @@ input, button {
     align-items: center;
     text-align: center;
     margin-bottom: 0.5rem;
-
 }
 
 .buttonAdd:hover {
@@ -234,7 +235,7 @@ h2 {
     margin-top: 1rem;
   }
 
-  .label {
+.label {
     width: 30px;
     height: 15px;
     background-color:#111;
@@ -247,7 +248,7 @@ h2 {
     transform: scale(1.5);
   }
 
-  .ball {
+.ball {
     width: 10px;
     height: 10px;
     background-color: white;
@@ -259,14 +260,39 @@ h2 {
   }
   
   /*  target the elemenent after the label*/
-  .checkbox:checked + .label .ball{
+.checkbox:checked + .label .ball{
     transform: translateX(14px);
   }
   
-  .fa-moon {
+.fa-moon {
     color: pink;
   }
   
-  .fa-sun {
+.fa-sun {
     color: yellow;
-  }
+}
+
+.buttonPagination {
+    cursor: pointer;
+    margin: 0 0.5rem;
+    font-size: 1rem;
+    font-weight: 700;
+    transition: 0.4s;
+    background-image: linear-gradient(to right, var(--pink), var(--purple));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.pagination {
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+
+}
+
+
+.sort {
+    display: flex;
+    justify-content: space-between;
+}
+  

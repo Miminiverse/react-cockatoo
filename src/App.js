@@ -1,26 +1,29 @@
 
-import React, { useEffect, useReducer, useState } from 'react';
-import TodoList from './TodoList'
-import AddTodoForm from './AddTodoForm'
-import SpeechText from './SpeechText'
-import Search from './Search'
-import {
-  BrowserRouter, Routes, Route
-} from "react-router-dom";
+import { useEffect, useReducer, useState } from 'react';
+import {BrowserRouter, Routes, Route} from "react-router-dom";
+import TodoList from './components/TodoList'
+import AddTodoForm from './components/AddTodoForm'
+import SpeechText from './components/SpeechText'
+import Search from './components/Search'
+import Pagination from './components/Pagination'
+import ThemeToggle   from './ThemeToggle'
+import ThemeContext from './ThemeContext'
 import styles from './static/App.module.css'
-import paths from './paths'
-import ThemeToggle from './ThemeToggle'
-import {ThemeContext}  from './ThemeContext'
 import "./index.css";
+import paths from './paths'
 
 
 function App() {
-  const [isDarkMode, setIsDarkMode] = useState(false)
+  const [isDarkMode, setIsDarkMode] = useState(true)
+  const [sortTitle, setSortTitle] = useState(true)
+  const [sortTime, setSortTime] = useState(true)
+  const [currentPage, setCurrentPage] = useState(1)
+  const [todoPerPage] = useState(10)
 
   function toggleTheme () {
-    console.log("toggleTheme")
     setIsDarkMode((prevIsDarkMode) => !prevIsDarkMode)
   }
+  
 
 
   const defaultHeaders = {
@@ -39,6 +42,31 @@ function App() {
           isLoading: false,
           todoList: action.payload.todoList
         }
+      case 'SORT_TITLES_AZ':
+        return {
+            ...previousState,
+            isLoading: false,
+            todoList: previousState.todoList.sort((a,b)=> a.title.localeCompare(b.title))
+          }
+
+      case 'SORT_TITLES_ZA':
+        return {
+              ...previousState,
+              isLoading: false,
+              todoList: previousState.todoList.sort((a,b)=> b.title.localeCompare(a.title))
+            }  
+      case 'SORT_TIME':
+        return {
+              ...previousState,
+              isLoading: false,
+              todoList: previousState.todoList.sort((a,b)=> a.createdTime.localeCompare(b.createdTime))
+            }                
+      case 'SORT_TIME_LATEST':
+        return {
+              ...previousState,
+              isLoading: false,
+              todoList: previousState.todoList.sort((a,b)=> b.createdTime.localeCompare(a.createdTime))
+            }      
       case 'SET_SEARCH_TEXT':
         return {
           ...previousState,
@@ -55,6 +83,17 @@ function App() {
           ...previousState,
           todoList: [...previousState.todoList, action.payload.newTodo]
         }
+      case 'EDIT_TODO':
+        return {
+          ...previousState,
+          todoList: 
+          previousState.todoList.map((todo) => {
+            if (todo.id === action.payload.editTodo.id) {
+              todo.title = action.payload.editTodo.title
+            }
+            return todo
+          }) 
+        }
       case 'REMOVE_TODO':
         return {
           ...previousState,
@@ -69,18 +108,27 @@ function App() {
     todoList: [],
     isLoading: true,
     isError: false,
-    searchText: ""
+    searchText: "",
+    sortTitle: false,
+
   }
+
+
+
 
   const [state, dispatchTitle] = useReducer(stateManagementFunction, initialState)
 
   const url = `https://api.airtable.com/v0/${process.env.REACT_APP_AIRTABLE_BASE_ID}/${process.env.REACT_APP_TABLE_NAME}`
 
+
   const refreshRecords = () => {
     dispatchTitle({
       type: 'START_LOADING_TITLES'
     })
-    fetchData({searchText : state.searchText}).then(loadedTodos => {
+    fetchData({
+      searchText : state.searchText, 
+    })
+      .then(loadedTodos => {
       dispatchTitle({
         type: 'FINISH_LOADING_TITLES',
         payload: {
@@ -90,21 +138,27 @@ function App() {
     })
   }
 
+
+
   const handleResponse = async (response) => {
     if (!response.ok) {
       throw new Error(`Error: ${response.status}`)
     }
     const data = await response.json()
     const todos = data.records.map((todo) => {
+
       return {
+        createdTime: todo.createdTime,
         title: todo.fields.title,
         id: todo.id
       }
     })
+
+
     return todos
   }
 
-  
+
   const fetchData = async options => {
 
     try {
@@ -113,10 +167,25 @@ function App() {
         params = {
           ...params, 
           filterByFormula: `SEARCH('${options.searchText.toLowerCase()}', {title})`,
-          'sort[0][field]': 'title',
-          'sort[0][direction]': 'desc',
         };
       }
+
+
+
+      // if (sortTitle === false) {
+      //   params = {
+      //     ...params, 
+      //     'sort[0][field]': 'title',
+      //     'sort[0][direction]': 'asc',
+      //   }
+      // } else {
+      //   params = {
+      //     ...params, 
+      //     'sort[0][field]': 'title',
+      //     'sort[0][direction]': 'desc',
+      //   }
+      // }
+      
 
       
       const response = await fetch (url + "?" + new URLSearchParams(params), 
@@ -125,6 +194,7 @@ function App() {
         method: "GET",
       }
       )
+
       return handleResponse(response)
 
     } catch (error) {
@@ -138,7 +208,9 @@ function App() {
     refreshRecords()
   }, [state.searchText])
 
+
   const addTodo = (newTodo) => {
+    console.log(newTodo);
     fetch (url, {
       method: 'POST',
       headers: {  
@@ -202,8 +274,9 @@ function App() {
   }
 
 
+
   const addSpeechTodo = (newSpeechNote) => {
-    console.log(newSpeechNote)
+
     fetch (url, {
       method: 'POST',
       headers: {  
@@ -215,7 +288,6 @@ function App() {
     )
     .then (response => response.json())
     .then(data => {
-      console.log(data)
       const addSpeechNote = 
       {
        title: data.fields.title,
@@ -229,7 +301,76 @@ function App() {
     })
     })
   }
+
+
+  const editTodo = (editTodo) => {
+    const urlEdit = `https://api.airtable.com/v0/${process.env.REACT_APP_AIRTABLE_BASE_ID}/${process.env.REACT_APP_TABLE_NAME}/${editTodo.id}`
+    fetch (urlEdit, {
+      method: 'PUT',
+      headers: {  
+        ...defaultHeaders,
+        'Content-Type': 'application/json',
+    },
+      body: JSON.stringify({
+        fields: {
+          title: editTodo.title
+        }})})
+    .then (response => response.json())
+    .then (data => { 
+      // refreshRecords()
+      const editTodo = 
+       {
+        title: data.fields.title,
+        id: data.id
+      }
+      dispatchTitle({
+        type: "EDIT_TODO",
+        payload: {
+          editTodo: editTodo 
+        }
+    })
+    })
+
+  }
+
+
+  const toggleSortTitle = () => {
+    if (sortTitle) {
+      dispatchTitle({
+        type: "SORT_TITLES_AZ"
+      })
+    setSortTitle((prevSortTitle) => !prevSortTitle)
+  } else {
+    dispatchTitle({
+      type: "SORT_TITLES_ZA"
+    })
+    setSortTitle((prevSortTitle) => !prevSortTitle)
+
+  }
   
+}
+
+
+const toggleSortTime = () => {
+  if (sortTime) {
+    dispatchTitle({
+      type: "SORT_TIME_LATEST"
+    })
+  setSortTime((prevSortTime) => !prevSortTime)
+} else {
+  dispatchTitle({
+    type: "SORT_TIME"
+  })
+  setSortTime((prevSortTime) => !prevSortTime)
+}
+
+}
+
+  const lastTodoIndex = currentPage * todoPerPage
+  const firstTodoIndex = lastTodoIndex - todoPerPage
+  const currentTodos = state.todoList.slice(firstTodoIndex,lastTodoIndex)
+
+
 
   return (
     <ThemeContext.Provider value={{isDarkMode, toggleTheme}} >
@@ -252,12 +393,27 @@ function App() {
         <h2>Bored of writing 😶‍🌫️ Speak to me 🤗</h2>
         <SpeechText onAddSpeechTodo={addSpeechTodo}/>
         </div>
+        <div>
+ 
+        </div>
         </header>
 
         <main>
         {state.isLoading ? <p> Loading ... </p> : 
-        <TodoList todoList={state.todoList} onRemoveTodo={removeTodo}/>
+        <TodoList 
+        toggleSortTitle={toggleSortTitle}
+        toggleSortTime={toggleSortTime}
+        todoList={currentTodos} 
+        onRemoveTodo={removeTodo}
+        onHandleEdit={editTodo}
+        />
         }
+
+        <Pagination 
+        totalTodos = {state.todoList.length}
+        todoPerPage={todoPerPage}
+        setCurrentPage={setCurrentPage}
+        />
         </main>
       </div>
       }

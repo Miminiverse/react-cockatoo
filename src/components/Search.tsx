@@ -1,15 +1,19 @@
 
-import React, {useState} from 'react';
+import React, {ChangeEvent, useState} from 'react';
 import InputWithLabel from './InputWithLabel'
-import styles from './static/App.module.css'
+import styles from '../static/App.module.css'
 
 
-export default function Search({onSearch }) {
+interface SearchProps {
+    onSearch: (searchTerm: string) => void
+}
 
-    const [timer, setTimer] = useState(null)
+export default function Search({onSearch} : SearchProps) {
+
+    const [timer, setTimer] = useState<NodeJS.Timeout | null>(null)
 
 
-    function onChange (e){
+    function onChange (e: ChangeEvent<HTMLInputElement>){
         if (timer) {
             clearTimeout(timer)
             setTimer(null)
