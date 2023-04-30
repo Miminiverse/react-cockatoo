@@ -2,7 +2,7 @@
 import React, { useEffect, useReducer, useState } from 'react';
 import {BrowserRouter, Routes, Route} from "react-router-dom";
 import {stateManagementFunction, initialState} from '@components/TodoState'
-import TodoList from '@components/TodoList'
+import TodoList from '@root/pages/TodoList'
 import AddTodoForm from "@root/forms/AddTodoForm";
 import SpeechText from '@components/SpeechText'
 import SpeechTextUpload from '@components/SpeechTextUpload'
@@ -14,6 +14,7 @@ import styles from '@asset/App.module.css'
 import {Todo} from '@root/types'
 import "@root/index.css"
 import paths from '@root/paths'
+import TodoItem from '@root/pages/TodoItem';
 
 
 function App() {
@@ -144,8 +145,9 @@ function App() {
     if (!response.ok) {
         throw new Error(`Error: ${response.status}`)
     }
+
     const data: AddTodoResponse = await response.json()
-    console.log(data);
+
     if (data) {
       const addTodo = 
       {
@@ -158,6 +160,7 @@ function App() {
          newTodo: addTodo 
        }
    })
+   alert("Added successfuly")
     }
     } catch (err) {
       dispatchTitle({
@@ -197,44 +200,6 @@ function App() {
 }
 
 
-
-  const onSearch = (searchText:string) => {
-    dispatchTitle ({
-      type: 'SET_SEARCH_TEXT',
-      payload: {searchText},
-    })
-  }
-
-
-
-  const addSpeechTodo = (newSpeechNote: Todo) => {
-
-    fetch (url, {
-      method: 'POST',
-      headers: {  
-        'Content-Type': 'application/json',
-        Authorization: `Bearer ${process.env.REACT_APP_AIRTABLE_API_KEY}`,
-    },
-      body: JSON.stringify({fields: newSpeechNote})
-    }
-    )
-    .then (response => response.json())
-    .then(data => {
-      const addSpeechNote = 
-      {
-       title: data.fields.title,
-       id: data.id
-     }
-      dispatchTitle({
-        type: "ADD_TODO",
-        payload: {
-          newTodo: addSpeechNote 
-        }
-    })
-    })
-  }
-
-
   const editTodo = (editTodo: Todo) => {
     const urlEdit = `https://api.airtable.com/v0/${process.env.REACT_APP_AIRTABLE_BASE_ID}/${process.env.REACT_APP_TABLE_NAME}/${editTodo.id}`
     fetch (urlEdit, {
@@ -261,7 +226,13 @@ function App() {
         }
     })
     })
+  }
 
+  const onSearch = (searchText:string) => {
+    dispatchTitle ({
+      type: 'SET_SEARCH_TEXT',
+      payload: {searchText},
+    })
   }
 
 
@@ -311,18 +282,26 @@ const toggleSortTime = () => {
       <Route exact path={paths.HOME} 
       element = {
         <div className={styles.body} >
+        <div className={styles.wrapHead} >
         <ThemeToggle />
+        <p> 📓 TodoList 📓</p>
+        </div>
         <header>
-        <h1>Todo List</h1>
-        <div className={styles.wrap}>
 
+        <div className={styles.wrap}>
         <AddTodoForm onAddTodo={addTodo} />
         <Search onSearch={onSearch}/>
         </div>
         <div className={styles.wrapSpeech}>
         <h2>Bored of writing 😶‍🌫️ Speak to me 🤗</h2>
-        <SpeechText onAddSpeechTodo={addSpeechTodo}/>
-        <SpeechTextUpload /> 
+        <SpeechText 
+        onAddSpeechTodo={addTodo}
+        />
+        <br/>
+        <br/>
+        <h2>Transcription 😶‍🌫️ Translation 🤗</h2>
+
+        <SpeechTextUpload onAddTextTodo={addTodo}/> 
         </div>
         <div>
  
@@ -330,7 +309,8 @@ const toggleSortTime = () => {
         </header>
 
         <main>
-        {state.isLoading ? <p> Loading ... </p> : 
+        {state.isLoading ? 
+        <p className={styles.loading}> ... Loading ... </p> : 
         <TodoList 
         toggleSortTitle={toggleSortTitle}
         toggleSortTime={toggleSortTime}
@@ -354,7 +334,12 @@ const toggleSortTime = () => {
         <h1>New Todo List</h1>
       }
       />
-
+      <Route path={paths.TODO}
+      element={
+        <TodoItem
+        />
+      }
+      />
 
     </Routes>
     </BrowserRouter>

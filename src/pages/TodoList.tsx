@@ -1,5 +1,5 @@
 import React from 'react';
-import TodoListItem from './TodoListItem.tsx';
+import TodoListItem from '../components/TodoListItem.tsx';
 import styles from '@asset/App.module.css'
 import {Todo} from '@root/types'
 

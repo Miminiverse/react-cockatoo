@@ -7,11 +7,9 @@ import styles from '@asset/App.module.css'
 import {Todo} from '@root/types'
 
 
-
 interface AddTodoProps {
     onAddTodo: (todo: Todo) => void
 }
-
 
 export default function AddTodoForm({onAddTodo}: AddTodoProps ): JSX.Element {
 

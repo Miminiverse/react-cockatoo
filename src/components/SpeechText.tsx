@@ -17,6 +17,7 @@ interface SpeechTextProps {
 
 export default function SpeechText({onAddSpeechTodo}: SpeechTextProps) {
 const [isListening, setIsListening] = useState(false)
+const [isClick, setIsClick] = useState(false)
 const [note, setNote] = useState<string | null>(null)
 
 
@@ -24,17 +25,22 @@ useEffect(() => {
   handleListen()
 }, [isListening])
 
+const handleClickListen = () => {
+  setIsListening(prevState => !prevState)
+  setIsClick(true)
+}
+
 const handleListen = () => {
+
   if (isListening) {
     mic.start()
     mic.onend = () => {
-      console.log('continue..')
       mic.start()
     }
   } else {
     mic.stop()
+    setNote("")
     mic.onend = () => {
-      console.log('Stopped Mic on Click')
     }
   }
   mic.onstart = () => {
@@ -69,10 +75,13 @@ function handleSaveNote() {
     <>
       <div>
         <div className={styles.boxSpeech}>
-          {isListening ? <span>🎙️</span> : <span>🛑</span>}
+        {isClick ? (
+          isListening ? <span>🎙️</span> : <span>🛑</span>
+        )  
+        : null }
           <button 
             className={styles.button} 
-          onClick={() => setIsListening(prevState => !prevState)}>
+            onClick={handleClickListen}>
             Start/Stop
           </button>
           <button
@@ -83,9 +92,12 @@ function handleSaveNote() {
           </button>
 
         </div>  
-          <div className={styles.note}>
+        { note ? 
+        <div className={styles.note}>
           <p>{note}</p>
-          </div>
+        </div>
+        : null}
+
         </div>
 
     </>

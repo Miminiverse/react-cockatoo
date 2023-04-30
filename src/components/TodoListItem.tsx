@@ -5,6 +5,7 @@ import Form from 'react-bootstrap/Form';
 import Modal from 'react-bootstrap/Modal';
 import styles from '@asset/App.module.css'
 import {Todo} from '@root/types'
+import {Link} from 'react-router-dom'
 
 interface TodoListItemProps {
   todo: Todo;
@@ -40,8 +41,10 @@ export default function TodoListItem({todo, onRemoveTodo, onHandleEdit}: TodoLis
         <>
         <div className={styles.lists}>
             <div className={styles.list}> 
-                <span>{todo.title} </span>
-            <div>
+            <Link className={styles.link} to={'/' + todo.id}>
+                <span className={styles.title} >{todo.title} </span>
+            </Link>
+            <div className={styles.wrapButton}>
             <button
              className={styles.button}
              type="button"
@@ -82,8 +85,7 @@ export default function TodoListItem({todo, onRemoveTodo, onHandleEdit}: TodoLis
         </Modal.Body>
         <Modal.Footer>
           <Button
-            className={styles.button}
-
+          className={styles.button}
            onClick={() => handleSaveEdit(todo.id)}>
             Save Changes
           </Button>

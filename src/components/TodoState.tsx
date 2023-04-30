@@ -8,7 +8,7 @@ interface State {
     sortTitle: boolean;
   }
   
-  type Action = 
+type Action = 
     | { type: 'START_LOADING_TITLES'}
     | { type: 'FINISH_LOADING_TITLES'; payload: { todoList: Todo[]}}
     | { type: 'SORT_TITLES_AZ'}
