@@ -1,9 +1,10 @@
 import React, {useState} from 'react'
-import paths from '@root/paths'
+import paths from '../paths'
 import { NavLink } from 'react-router-dom'
 import styles from '@asset/NavBar.module.css'
-import ThemeToggle   from '@components/ThemeToggle'
+import ThemeToggle   from './ThemeToggle'
 import burger from '@asset/burger.svg'
+
 const NavBar = () => {
     const [showNav, setShowNav] = useState<boolean>(false)
 

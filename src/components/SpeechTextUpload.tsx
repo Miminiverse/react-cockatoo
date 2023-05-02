@@ -1,8 +1,12 @@
 import React, {ChangeEvent, useState} from 'react'
-import TextToSpeech from '@components/TextToSpeech'
+import TextToSpeech from './TextToSpeech'
 import styles from '@asset/App.module.css'
 
-const SpeechTextUpload = ({onAddTextTodo}) => {
+interface SpeechTextProps {
+    onAddTextTodo: (convertedText: {title: string}) => void
+}
+
+const SpeechTextUpload: React.FC<SpeechTextProps> = ({onAddTextTodo}) => {
 
     const WHISPER_TRANSCRIPTION_URL = "https://api.openai.com/v1/audio/translations"
 

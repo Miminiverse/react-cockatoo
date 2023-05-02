@@ -7,7 +7,7 @@ module.exports = {
       "@asset": path.resolve(__dirname, "src/asset"),
       "@components": path.resolve(__dirname, "src/components"),
       "@pages": path.resolve(__dirname, "src/pages"),
-
+      "@forms": path.resolve(__dirname, "src/forms"),
     }
   }
 };

@@ -4,7 +4,7 @@ import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
 import Modal from 'react-bootstrap/Modal';
 import styles from '@asset/App.module.css'
-import {Todo} from '@root/types'
+import {Todo} from '../types'
 import {Link} from 'react-router-dom'
 
 interface TodoListItemProps {

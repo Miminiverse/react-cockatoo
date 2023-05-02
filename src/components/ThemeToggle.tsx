@@ -1,5 +1,5 @@
 import React, {useContext} from 'react';
-import ThemeContext from "@root/context/ThemeContext";
+import ThemeContext from "../context/ThemeContext";
 import styles from '@asset/App.module.css'
 
 

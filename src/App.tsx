@@ -1,20 +1,20 @@
 
 import React, { useEffect, useReducer, useState } from 'react';
 import {BrowserRouter, Routes, Route} from "react-router-dom";
-import {stateManagementFunction, initialState} from './components/TodoState'
-import TodoList from '@root/pages/TodoList'
-import AddTodoForm from "@root/forms/AddTodoForm";
+import {stateManagementFunction, initialState} from '@components/TodoState'
+import TodoList from '@pages/TodoList'
+import AddTodoForm from './forms/AddTodoForm'
 import SpeechText from '@components/SpeechText'
 import SpeechTextUpload from '@components/SpeechTextUpload'
 import NavBar from '@components/NavBar'
-import Search from '@root/forms/Search'
+import Search from './forms/Search'
 import Pagination from '@components/Pagination'
 import ThemeContext from '@root/context/ThemeContext'
 import styles from '@asset/App.module.css'
 import {Todo} from '@root/types'
 import "@root/index.css"
 import paths from '@root/paths'
-import TodoItem from '@root/pages/TodoItem';
+import TodoItem from '@pages/TodoItem';
 
 
 
@@ -153,7 +153,8 @@ function App() {
       const addTodo = 
       {
        title: data.fields.title,
-       id: data.id
+       id: data.id,
+       createdTime: data.createdTime,
      }
      dispatchTitle({
        type: "ADD_TODO",
@@ -281,7 +282,7 @@ const toggleSortTime = () => {
     <NavBar />
     <Routes>
 
-      <Route exact path={paths.HOME} 
+      <Route path={paths.HOME} 
       element = {
         <div className={styles.body} >
         <div className={styles.wrapHead} >

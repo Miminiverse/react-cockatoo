@@ -1,10 +1,10 @@
 
 import React, {ChangeEvent, useState} from 'react';
 import { useNavigate } from 'react-router-dom'
-import InputWithLabel from '@root/forms/InputWithLabel'
-import paths from '@root/paths/paths.tsx'
+import InputWithLabel from './InputWithLabel'
+import paths from '../paths/paths'
 import styles from '@asset/App.module.css'
-import {Todo} from '@root/types'
+import {Todo} from '../types'
 
 
 interface AddTodoProps {

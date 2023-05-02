@@ -1,6 +1,6 @@
 
 import React, {ChangeEvent, useState} from 'react';
-import InputWithLabel from '@root/forms/InputWithLabel'
+import InputWithLabel from './InputWithLabel'
 import styles from '@asset/App.module.css'
 
 
