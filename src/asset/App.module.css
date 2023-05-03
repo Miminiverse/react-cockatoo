@@ -8,6 +8,7 @@
     --purple: #545262;
 }
 
+
 * {
     box-sizing: border-box;
     margin: 0;
@@ -128,6 +129,12 @@ main {
 }
 
 .todoList {
+
+    padding: 1rem;
+}
+
+.todoItem {
+    height: 100vh;
     padding: 1rem;
 }
 

@@ -2,11 +2,16 @@ import React, { useState, useEffect } from "react";
 import styles from '@asset/App.module.css'
 
 
-const TextToSpeech = ({ convertedText, onAddTextTodo }) => {
+interface TextToSpeechProps {
+  convertedText: string;
+  onAddTextTodo: (convertedText: {title: string}) => void
+}
+
+const TextToSpeech:React.FC<TextToSpeechProps> = ({ convertedText, onAddTextTodo }) => {
   const [show, setShow] = useState(false);
   const [isPaused, setIsPaused] = useState(false);
-  const [utterance, setUtterance] = useState<null>(null);
-  const [voice, setVoice] = useState<null>(null);
+  const [utterance, setUtterance] = useState<SpeechSynthesisUtterance | null>(null);
+  const [voice, setVoice] = useState<null | SpeechSynthesisVoice>(null);
   const [pitch, setPitch] = useState(1);
   const [rate, setRate] = useState(0.9);
   const [volume, setVolume] = useState(1);
@@ -15,10 +20,11 @@ const TextToSpeech = ({ convertedText, onAddTextTodo }) => {
     if (convertedText) {
         const synth = window.speechSynthesis;
         const u = new SpeechSynthesisUtterance(convertedText);
+        console.log(typeof(u))
         setUtterance(u);
         setShow(true)
     
-        // Add an event listener to the speechSynthesis object to listen for the voiceschanged event
+        // Add an event listener to the speechSynthesis object to listen for the voices changed event
         synth.addEventListener("voiceschanged", () => {
           const voices = synth.getVoices();
           setVoice(voices[0]);
@@ -40,11 +46,13 @@ const TextToSpeech = ({ convertedText, onAddTextTodo }) => {
     if (isPaused) {
       synth.resume();
     } else {
+      if (utterance) {
       utterance.voice = voice;
       utterance.pitch = pitch;
       utterance.rate = rate;
       utterance.volume = volume;
       synth.speak(utterance);
+      }
     }
 
     setIsPaused(false);
@@ -67,17 +75,17 @@ const TextToSpeech = ({ convertedText, onAddTextTodo }) => {
 //     setVoice(voices.find((v) => v.name === event.target.value));
 //   };
 
-  const handlePitchChange = (event) => {
-    setPitch(parseFloat(event.target.value));
-  };
+  // const handlePitchChange = (event) => {
+  //   setPitch(parseFloat(event.target.value));
+  // };
 
-  const handleRateChange = (event) => {
-    setRate(parseFloat(event.target.value));
-  };
+  // const handleRateChange = (event) => {
+  //   setRate(parseFloat(event.target.value));
+  // };
 
-  const handleVolumeChange = (event) => {
-    setVolume(parseFloat(event.target.value));
-  };
+  // const handleVolumeChange = (event) => {
+  //   setVolume(parseFloat(event.target.value));
+  // };
 
   const handleSaveText = () => {
     if (!convertedText) {

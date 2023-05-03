@@ -1,4 +1,4 @@
-import {Todo} from '../types'
+import {Todo} from '@root/types'
 
 interface State {
     todoList: Todo[];

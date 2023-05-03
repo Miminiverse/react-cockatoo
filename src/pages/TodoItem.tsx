@@ -1,12 +1,11 @@
 import React, { useEffect, useState} from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import styles from '@asset/App.module.css'
 
 
 export default function TodoItem () {
     const {id} = useParams()
     const [todo, setTodo] = useState<any>("")
-    const navigate = useNavigate()
 
     const defaultHeaders = {
         Authorization: `Bearer ${process.env.REACT_APP_AIRTABLE_API_KEY}`,
@@ -44,7 +43,7 @@ useEffect(() => {
 
     return (
         <>
-        <div className={styles.todoList}>
+        <div className={styles.todoItem}>
             <h2>Task</h2>
         <div className={styles.lists}>
             <div className={styles.list}> 

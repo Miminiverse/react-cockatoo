@@ -1,15 +1,14 @@
 import React, {useState} from 'react'
-import paths from '../paths'
+import paths from '@root/paths'
 import { NavLink } from 'react-router-dom'
 import styles from '@asset/NavBar.module.css'
-import ThemeToggle   from './ThemeToggle'
+import ThemeToggle from './ThemeToggle'
 import burger from '@asset/burger.svg'
 
 const NavBar = () => {
     const [showNav, setShowNav] = useState<boolean>(false)
 
     const toggleNavItems = () => {
-        console.log("click")
         setShowNav(!showNav)
     }
 

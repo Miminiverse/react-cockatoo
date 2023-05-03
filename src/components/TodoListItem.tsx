@@ -1,11 +1,11 @@
 import React, {ChangeEvent, useState} from 'react';
+import {Link} from 'react-router-dom'
 import "bootstrap/dist/css/bootstrap.min.css";
 import Button from 'react-bootstrap/Button';
 import Form from 'react-bootstrap/Form';
 import Modal from 'react-bootstrap/Modal';
 import styles from '@asset/App.module.css'
-import {Todo} from '../types'
-import {Link} from 'react-router-dom'
+import {Todo} from '@root/types'
 
 interface TodoListItemProps {
   todo: Todo;

@@ -3,11 +3,11 @@ import React, { useEffect, useReducer, useState } from 'react';
 import {BrowserRouter, Routes, Route} from "react-router-dom";
 import {stateManagementFunction, initialState} from '@components/TodoState'
 import TodoList from '@pages/TodoList'
-import AddTodoForm from './forms/AddTodoForm'
+import AddTodoForm from '@forms/AddTodoForm'
 import SpeechText from '@components/SpeechText'
 import SpeechTextUpload from '@components/SpeechTextUpload'
 import NavBar from '@components/NavBar'
-import Search from './forms/Search'
+import Search from '@forms/Search'
 import Pagination from '@components/Pagination'
 import ThemeContext from '@root/context/ThemeContext'
 import styles from '@asset/App.module.css'
@@ -26,6 +26,7 @@ function App() {
   const [todoPerPage] = useState<number>(10)
 
   function toggleTheme () {
+    console.log("click")
     setIsDarkMode((prevIsDarkMode) => !prevIsDarkMode)
   }
   
@@ -282,7 +283,7 @@ const toggleSortTime = () => {
     <NavBar />
     <Routes>
 
-      <Route path={paths.HOME} 
+      <Route exact path={paths.HOME} 
       element = {
         <div className={styles.body} >
         <div className={styles.wrapHead} >
@@ -331,7 +332,10 @@ const toggleSortTime = () => {
       />
       <Route path={paths.NEW_TODO} 
       element={
-        <h1>New Todo List</h1>
+        <div className={styles.todoItem}>
+          <h1>New Todo List</h1>
+
+        </div>
       }
       />
       <Route path={paths.TODO}

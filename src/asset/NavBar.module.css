@@ -6,19 +6,23 @@
 }
 
 .navTitle {
-    padding-left: 5rem;
     font-size: 1.5rem;
+    padding-left: 6rem;
 }
 
+
 .container {
-    max-width: 1100px;
-    margin: 0 0;
-    padding: 0 15px;
+    margin: 0 auto;
+    padding: 1rem 1rem;
     display: flex;
     justify-content: space-between;
     align-items: center;
-    height: 100%;
     text-align: center;
+    height: 100%;
+}
+
+.navElements {
+  width: 8rem;
 }
 
 .navElements ul {
@@ -31,7 +35,7 @@
 }
 
 .navElements ul li:not(:last-child) {
-    margin: 1rem ;
+    /* margin: 1rem ; */
     align-items: center;
     justify-content: center;
     text-align: center;
@@ -95,7 +99,6 @@
     
       .active {
         width: 80px;
-
       }
     
       .navElements ul {
@@ -106,12 +109,14 @@
       .navElements ul li {
         margin-right: unset;
         margin-top: 0.3rem;
+
       }
       .navElements ul a {
         font-size: 1rem;
         font-weight: 400;
         color: white;
         text-decoration: none;
+        text-align: center;
     }
     .navTitle {
         padding-left: 1rem;
