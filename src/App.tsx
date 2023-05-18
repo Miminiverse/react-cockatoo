@@ -1,6 +1,6 @@
 
-import React, { useEffect, useReducer, useState } from 'react';
-import {BrowserRouter, Routes, Route} from "react-router-dom";
+import React, { useContext, useEffect, useReducer, useState, createContext } from 'react';
+import {BrowserRouter, Routes, Route, useNavigate, Navigate, Outlet} from "react-router-dom";
 import {stateManagementFunction, initialState} from '@components/TodoState'
 import TodoList from '@pages/TodoList'
 import AddTodoForm from '@forms/AddTodoForm'
@@ -10,11 +10,24 @@ import NavBar from '@components/NavBar'
 import Search from '@forms/Search'
 import Pagination from '@components/Pagination'
 import ThemeContext from '@root/context/ThemeContext'
+import GetTodos from './TodoAPI/GetTodos'
+import FetchTodos from './TodoAPI/FetchTodos'
 import styles from '@asset/App.module.css'
 import {Todo} from '@root/types'
 import "@root/index.css"
 import paths from '@root/paths'
 import TodoItem from '@pages/TodoItem';
+import Login from '@pages/Login';
+import Register from '@pages/Register';
+import PrivateRoutes from '@components/PrivateRoutes';
+import {UserContextProvider} from './context/UserContext'
+import {UserContext} from "./context/UserContext";
+
+// interface UserContextType {
+//   // Define your context properties and their types
+//   user: string;
+//   setUser: (user: string) => void;
+// }
 
 
 
@@ -23,15 +36,19 @@ function App() {
   const [sortTitle, setSortTitle] = useState<boolean>(true)
   const [sortTime, setSortTime] = useState<boolean>(true)
   const [currentPage, setCurrentPage] = useState<number>(1)
-  const [todoPerPage] = useState<number>(10)
-
-  function toggleTheme () {
-    console.log("click")
-    setIsDarkMode((prevIsDarkMode) => !prevIsDarkMode)
-  }
-  
+  const [todoPerPage] = useState<number>(5)
   const [state, dispatchTitle] = useReducer(stateManagementFunction, initialState)
 
+
+
+  function toggleTheme () {
+    setIsDarkMode((prevIsDarkMode) => !prevIsDarkMode)
+  }
+
+
+
+
+  
   const defaultHeaders = {
     Authorization: `Bearer ${process.env.REACT_APP_AIRTABLE_API_KEY}`,
   }
@@ -105,6 +122,8 @@ function App() {
           'sort[0][field]': 'title',
           'sort[0][direction]': 'asc',
         }
+
+
 
       const response = await fetch (url + "?" + new URLSearchParams(params), 
       {
@@ -277,12 +296,16 @@ const toggleSortTime = () => {
 
 
   return (
+    <UserContextProvider>
     <ThemeContext.Provider value={{isDarkMode, toggleTheme}} >
       <div className={`App ${isDarkMode ? 'dark' : 'light'}`}>
     <BrowserRouter>
     <NavBar />
     <Routes>
+      <Route path={paths.REGISTER} element={<Register />} />
+      <Route path={paths.LOGIN} element={<Login />} />
 
+      <Route element={<PrivateRoutes />} >
       <Route exact path={paths.HOME} 
       element = {
         <div className={styles.body} >
@@ -291,14 +314,15 @@ const toggleSortTime = () => {
         <header>
 
         <div className={styles.wrap}>
+
         <AddTodoForm onAddTodo={addTodo} />
         <Search onSearch={onSearch}/>
         </div>
         <div className={styles.wrapSpeech}>
         <h2>Bored of writing 😶‍🌫️ Speak to me 🤗</h2>
-        <SpeechText 
+        {/* <SpeechText 
         onAddSpeechTodo={addTodo}
-        />
+        /> */}
         <br/>
         <br/>
         <h2>Transcription 😶‍🌫️ Translation 🤗</h2>
@@ -326,8 +350,13 @@ const toggleSortTime = () => {
         todoPerPage={todoPerPage}
         setCurrentPage={setCurrentPage}
         />
+
         </main>
+
+
       </div>
+
+      
       }
       />
       <Route path={paths.NEW_TODO} 
@@ -344,11 +373,12 @@ const toggleSortTime = () => {
         />
       }
       />
-
+    </Route>
     </Routes>
     </BrowserRouter>
     </div>
     </ThemeContext.Provider>
+    </UserContextProvider>
   );
 }
 

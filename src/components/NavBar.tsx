@@ -1,6 +1,5 @@
 import React, {useState} from 'react'
 import paths from '@root/paths'
-import { NavLink } from 'react-router-dom'
 import styles from '@asset/NavBar.module.css'
 import ThemeToggle from './ThemeToggle'
 import burger from '@asset/burger.svg'
@@ -20,17 +19,16 @@ const NavBar = () => {
         <div className={styles.menu} onClick={toggleNavItems}>
             <img src={burger} alt="burger menu" className={styles.burger}/>
         </div>
-        <div className={`${styles.navElements} ${showNav && styles.active}`}>
+        <div className={`${styles.navElements} ${ showNav ? styles.active : ""}`}>
         <ul>
         <li>
-            <NavLink to={paths.HOME}>Home</NavLink>
+            <a href={paths.HOME} >Home</a>
           </li>
-          <li>
-            <NavLink to={paths.NEW_TODO}>Add</NavLink>
+          <li className={styles.li}>
+            <a href={paths.NEW_TODO}>Add</a>
           </li>
         </ul>
       </div>
-
       </div>
     </nav>
   )
