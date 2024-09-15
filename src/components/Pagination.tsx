@@ -1,4 +1,4 @@
-import styles from '../static/App.module.css'
+import styles from '@asset/App.module.css'
 import React from 'react'
 
 interface PaginationProps {
@@ -20,7 +20,7 @@ const Pagination = ({totalTodos, todoPerPage,setCurrentPage}: PaginationProps) =
         <div className={styles.pagination}>
         {pages.map((page: number, idx: number) => 
         <button              
-        className={styles.buttonPagination}
+        className={styles.button}
         key={idx}
         onClick={() => setCurrentPage(page)}
         >{page}

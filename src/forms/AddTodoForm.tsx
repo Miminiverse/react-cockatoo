@@ -1,17 +1,15 @@
 
 import React, {ChangeEvent, useState} from 'react';
-import InputWithLabel from './InputWithLabel.tsx'
 import { useNavigate } from 'react-router-dom'
-import paths from '../paths'
-import styles from '../static/App.module.css'
-import {Todo} from '../types'
-
+import InputWithLabel from './InputWithLabel'
+import paths from '@root/paths/paths'
+import styles from '@asset/App.module.css'
+import {Todo} from '@root/types'
 
 
 interface AddTodoProps {
     onAddTodo: (todo: Todo) => void
 }
-
 
 export default function AddTodoForm({onAddTodo}: AddTodoProps ): JSX.Element {
 

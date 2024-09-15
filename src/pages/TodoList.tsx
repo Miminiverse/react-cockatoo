@@ -1,7 +1,7 @@
 import React from 'react';
-import TodoListItem from './TodoListItem.tsx';
-import styles from '../static/App.module.css'
-import {Todo} from '../types'
+import TodoListItem from '@components/TodoListItem';
+import styles from '@asset/App.module.css'
+import {Todo} from '@root/types'
 
 
 interface TodoListProps {

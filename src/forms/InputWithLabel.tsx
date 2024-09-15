@@ -1,5 +1,5 @@
 import React, {useRef, useEffect, InputHTMLAttributes, FC} from 'react';
-import styles from '../static/App.module.css'
+import styles from '@asset/App.module.css'
 
 interface InputWithLabelProps extends InputHTMLAttributes<HTMLInputElement>{
     id: string;
@@ -12,7 +12,6 @@ const InputWithLabel: FC<InputWithLabelProps> = ({ id, children,  ...inputProps 
 
     useEffect (() => {
         if (inputRef.current) {
-
             inputRef.current.focus()
         }
     }, [])
