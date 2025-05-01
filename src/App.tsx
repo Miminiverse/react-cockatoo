@@ -325,7 +325,7 @@ const toggleSortTime = () => {
         /> */}
         <br/>
         <br/>
-        <h2>Transcription 😶‍🌫️ Translation 🤗</h2>
+        <h2>Transcription 😶‍🌫️ Translation 123 🤗</h2>
 
         <SpeechTextUpload onAddTextTodo={addTodo}/> 
         </div>
